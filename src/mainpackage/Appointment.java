@@ -16,14 +16,14 @@ public class Appointment
     
     public void CreateAppointment()
     {
-    	
+    	System.out.println("Appointment created successfully!");
     }
     
     
     
     public void CancelAppointment()
     {
-    	
+    	System.out.println("Appointment cancelled successfully.");
     }
     
     

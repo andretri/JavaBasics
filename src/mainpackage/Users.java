@@ -20,11 +20,11 @@ public class Users
     
    public void login()
    {
-	   	System.out.println("Welcome, "+ this.GetUsername());
+        System.out.println("Welcome, "+ this.GetUsername());
    }
    public void logout()
    {
-	   	System.out.println("Goodbye, "+ this.GetUsername());
+        System.out.println("Goodbye, "+ this.GetUsername());
    }
    
    
@@ -32,11 +32,11 @@ public class Users
    /* Attribute: username Setters-Getters */
    public void SetUsername(String str)
    {
-	   	username = str;
+        username = str;
    }
    public String GetUsername()
    {
-       	return this.username;
+       	return username;
    }
    
    
@@ -56,7 +56,7 @@ public class Users
    }    
    public String GetName()    
    {
-	   	return this.name;
+        return this.name;
    }
    
    
