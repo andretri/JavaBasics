@@ -19,6 +19,7 @@ public class Admin extends Users
     public void RegisterPatient()
     {
         //Register a new patient.
+        //Test2
     }
     
     
