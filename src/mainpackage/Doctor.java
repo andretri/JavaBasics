@@ -25,6 +25,7 @@ public class Doctor extends Users
     public void ViewScheduledAppointments()
     {
         //View schedule of appointments with patients.
+        //test
     }
     
     
