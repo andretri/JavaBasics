@@ -18,45 +18,59 @@ public class Users
         surname = surnameTmp;
    }
     
-    public void login()
-    {
-        System.out.println("Welcome, "+ this.GetUsername());
-    }
-    public void logout()
-    {
-    	System.out.println("Goodbye, "+ this.GetUsername());
-    }
-    
-    /* Attribute: username Setters-Getters */
-    public void SetUsername(String str)
-    {
-        username = str;
-    }
-    public String GetUsername()
-    {
-        return this.username;
-    }
-    /* Attribute: password Setters */
-    public void SetPassword(String str)
-    {
-        password = str;
-    }
-    /* Attribute: name Setters-Getters */
-    public void SetName(String str)
-    {
-        name = str;
-    }    
-    public String GetName()    
-    {
-        return this.name;
-    }
-    /* Attribute: surname Setters-Getters */
-    public void SetSurname(String str)         
-    {
-        surname = str;
-    }
-    public String GetSurname()
-    {
-        return this.surname;
-    }
+   public void login()
+   {
+	   	System.out.println("Welcome, "+ this.GetUsername());
+   }
+   public void logout()
+   {
+	   	System.out.println("Goodbye, "+ this.GetUsername());
+   }
+   
+   
+   
+   /* Attribute: username Setters-Getters */
+   public void SetUsername(String str)
+   {
+	   	username = str;
+   }
+   public String GetUsername()
+   {
+       	return this.username;
+   }
+   
+   
+   
+   /* Attribute: password Setters */
+   public void SetPassword(String str)
+   {
+       	password = str;
+   }
+   
+   
+   
+   /* Attribute: name Setters-Getters */
+   public void SetName(String str)
+   {
+       	name = str;
+   }    
+   public String GetName()    
+   {
+	   	return this.name;
+   }
+   
+   
+   
+   /* Attribute: surname Setters-Getters */
+   public void SetSurname(String str)         
+   {
+       	surname = str;
+   }
+   public String GetSurname()
+   {
+       	return this.surname;
+   }
+   
+   
+   
 }
