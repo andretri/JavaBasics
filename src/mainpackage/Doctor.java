@@ -15,26 +15,44 @@ public class Doctor extends Users
     
     
     
-    public void DocAvailability()
+    public void EditDocAvailability()
     {
-        System.out.println("Please input below the days and hours for available appointments:___");
-        //Ability to change days and hours at which appointments by patients can be made.
+    	//Ability to change days and hours at which appointments by patients can be made.
+        System.out.println("Please input below the days and hours for available appointments:");
+        
+        System.out.println("Ability to change days and hours at which appointments by patients can be made."
+        		+ "\nA Feature WIP.\n"
+        		+ "It will be Complete once we Connect"
+        		+ "Java to a Database, which will modify"
+        		+ "all the *inserted* available appointments for a CERTAIN (this.userName) DOCTOR");
     }
     
     
     
     public void ViewScheduledAppointments()
     {
-        System.out.println("Your schedule is :___");
-        //View schedule of appointments with patients.
+    	//View schedule of appointments with patients.
+        System.out.println("Your schedule is :");
+        
+        System.out.println("View schedule of appointments with patients."
+        		+ "\nA Feature WIP.\n"
+        		+ "It will be Complete once we Connect"
+        		+ "Java to a Database, which will hold"
+        		+ "all the *scheduled* appointments for a CERTAIN (this.userName) DOCTOR");
     }
     
     
     
     public void ViewAppointmentHistory()
     {
-        System.out.println("Your appointment history is :___");
-        //View history of appointments.
+    	//View history of appointments.
+        System.out.println("Your appointment history is :");
+
+        System.out.println("View history of appointments."
+        		+ "\nA Feature WIP.\n"
+        		+ "It will be Complete once we Connect"
+        		+ "Java to a Database, which will hold"
+        		+ "all the *past* appointments for a CERTAIN (this.userName) DOCTOR");
     }
     
     public void PrintInfo()
@@ -48,7 +66,7 @@ public class Doctor extends Users
     }
     
     
-    //Get-Set Spec
+    //Get-Set doctor's specification
     public String GetSpec()
     {
         return spec;
@@ -59,8 +77,6 @@ public class Doctor extends Users
         spec = spc;
     }
 
-    
-    
     public String GetSSN() 
     {
         return SSN;

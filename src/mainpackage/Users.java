@@ -5,7 +5,8 @@ public class Users
     public static int usersCounter = 0;
     
     private String username;
-    private String password;
+    	@SuppressWarnings("unused")
+	private String password;
     private String name, surname;
     
     public Users(String usrname, String usrpass, String nameTmp, String surnameTmp)
@@ -18,6 +19,7 @@ public class Users
         surname = surnameTmp;
    }
     
+    
    public void login()
    {
         System.out.println("Welcome, "+ this.GetUsername());
@@ -29,19 +31,19 @@ public class Users
    
    
    
-   /* Attribute: username Setters-Getters */
+   /* Attribute: username Set-Get */
    public void SetUsername(String str)
    {
         username = str;
    }
    public String GetUsername()
    {
-       	return username;
+       	return this.username;
    }
    
    
    
-   /* Attribute: password Setters */
+   /* Attribute: password Set */
    public void SetPassword(String str)
    {
        	password = str;
@@ -49,7 +51,7 @@ public class Users
    
    
    
-   /* Attribute: name Setters-Getters */
+   /* Attribute: name Set-Get */
    public void SetName(String str)
    {
        	name = str;
@@ -61,7 +63,7 @@ public class Users
    
    
    
-   /* Attribute: surname Setters-Getters */
+   /* Attribute: surname Set-Get */
    public void SetSurname(String str)         
    {
        	surname = str;
