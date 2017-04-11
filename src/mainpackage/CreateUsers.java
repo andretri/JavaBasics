@@ -176,14 +176,21 @@ public class CreateUsers
         
     }	
 
-    //Get Next Line From Terminal
+
     public String ScanNextLine(Scanner scan)
     {
     	String tmp = scan.nextLine();
+    	
+    	while (!tmp.matches("[A-Za-z0-9]+")) 
+    	{
+            System.out.println("Wrong Input");
+            tmp = scan.nextLine();
+        }
+    	
     	return tmp;
     }
-    
-    //Get Next Line From Terminal and Validate if it has only letters
+
+
     public String ValidateStr(Scanner scan)
     {
     	String tmp = scan.nextLine();
@@ -194,8 +201,8 @@ public class CreateUsers
         }
     	return tmp;
     }
-    
-    //Get Next Line From Terminal and Validate if it has exactly 10 digits
+
+
     public String ValidateNum(Scanner scan)
     {
     	String tmp = scan.nextLine();
@@ -213,9 +220,21 @@ public class CreateUsers
     	do
         {
 	        System.out.print("\nInput Password:");
+	       
 	        tmp = scan.nextLine();
+	    	while (!tmp.equals("")) 
+	    	{
+	            System.out.println("Wrong Input");
+	            tmp = scan.nextLine();
+	        }
 	        System.out.print("\nRe-Input Password:");
+	        
 	        tmp2 = scan.nextLine();
+	    	while (!tmp.equals(""))
+	    	{
+	            System.out.println("Wrong Input");
+	            tmp2 = scan.nextLine();
+	        }
         }
         while(!tmp.equals(tmp2));
     	return tmp;
