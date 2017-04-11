@@ -3,14 +3,20 @@ package mainpackage;
 
 public class Doctor extends Users 
 {
-    private final String SSN;
+    private String SSN = null;
     private String spec;
     
+    
+    public Doctor()
+    {
+    	super("", "", "", "");
+    	this.SetSpec(null);
+    }
     public Doctor(String usrname, String usrpass, String nameTmp, String surnameTmp, String SSNTmp, String spc)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
-        SSN = SSNTmp;
-        spec = spc;
+    	this.SetSSN(SSNTmp);
+    	this.SetSpec(spc);
     }
     
     
@@ -55,6 +61,7 @@ public class Doctor extends Users
         		+ "all the *past* appointments for a CERTAIN (this.userName) DOCTOR");
     }
     
+    @Override
     public void PrintInfo()
     {
         System.out.println("\nDoctor info: ");
@@ -67,16 +74,23 @@ public class Doctor extends Users
     
     
     //Get-Set doctor's specification
+    public void SetSpec(String spc)
+    {
+    	spec = spc;
+    }
     public String GetSpec()
     {
         return spec;
     }
     
-    public void SetSpec(String spc)
+    //Get-Set doctor's Social Security Number
+    public void SetSSN(String tmpSSN) throws NumberFormatException
     {
-        spec = spc;
+        if (this.SSN == null)
+        	SSN = tmpSSN;
+        else 
+        	throw new NumberFormatException();
     }
-
     public String GetSSN() 
     {
         return SSN;

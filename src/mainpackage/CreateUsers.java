@@ -13,15 +13,17 @@ public class CreateUsers
     @SuppressWarnings("unused")
 	public static void main(String[] args)
     {
+    	CreateUsers ValidateInput = new CreateUsers();
+    	
         //Step 4 - Creation of Objects Pre-Runtime - Test of methods.
-        Admin nimda = new Admin("TheMachine", "WelcometotheMachine", "Machine", "The");
+    	Admin nimda = new Admin("TheMachine", "WelcometotheMachine", "Machine", "The");
         Patient patA = new Patient("johnDoe", "letmein", "John", "Doe", "1111111111");
-        Patient patB = new Patient("janeDoe", "letmein", "Jane", "Doe", "2222222222");
+        Patient patB = new Patient("BenedictC", "123456789", "Benedict", "Tennismatch", "2222222221");
         Doctor docA = new Doctor("DrStrange", "123456789", "Stephen", "Strange", "2222222222", "Neurosurgeon");
         Doctor docB = new Doctor("JohnApp", "1234", "Appleseed", "John", "4321876509", "Pharmaceuticals");
         Doctor docC = new Doctor("DocWho", "T@rd!$", "Smith", "John", "0000000000", "Time Travel");
         
-        
+
         //Patient Methods
         System.out.println("Below are methods of the class Patient:\n");
         patA.login();
@@ -31,7 +33,9 @@ public class CreateUsers
         patA.ViewAppointmentHistory();
         patA.ViewScheduledAppointments();
         patA.logout();
-	
+        
+        
+
         //Doctor Methods
         System.out.println("Below are methods of the class Doctor:\n");
         docC.login();
@@ -40,6 +44,7 @@ public class CreateUsers
         docC.ViewAppointmentHistory();
         docC.ViewScheduledAppointments();
         docC.logout();
+
         
         //Administrator Methods
         System.out.println("Below are methods of the class Admin:\n");
@@ -70,28 +75,72 @@ public class CreateUsers
         app.CancelAppointment();
          
         //Step 5 - Creation of Objects on Runtime.
-        String[] objArgs = new String[5]; 
-        Scanner scan = new Scanner(System.in);
-        
+        String tmp;
+        Scanner scn = new Scanner(System.in);
+        	//create a PATIENT Object
+        Patient tmpPat = new Patient();       
         System.out.print("\nInput Patient Username:");
-        objArgs[0] = scan.nextLine();
-        System.out.print("\nInput Patient Password:");
-        objArgs[1] = scan.nextLine();
+        tmp = ValidateInput.ScanNextLine(scn);
+        tmpPat.SetUsername(tmp);
+        tmp = ValidateInput.ValidatePasswrd(scn);
+        tmpPat.SetPassword(tmp);
         System.out.print("\nInput Patient Name:");
-        objArgs[2] = scan.nextLine();
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpPat.SetName(tmp);
         System.out.print("\nInput Patient Surname:");
-        objArgs[3] = scan.nextLine();;
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpPat.SetSurname(tmp);
         System.out.println("\nInput Patient SSN:");
-        objArgs[4] = scan.nextLine();
-		
-        Patient pat2 = new Patient(objArgs[0], objArgs[1], objArgs[2], objArgs[3], objArgs[4]);
-        pat2.PrintInfo();
-        scan.close();
-  
+        tmp = ValidateInput.ValidateNum(scn);
+        tmpPat.SetSSN(tmp);
+        		//Display Object's Info
+        tmpPat.PrintInfo();
+ 
+        
+        //create a DOCTOR Object
+        Doctor tmpDoc = new Doctor();
+        System.out.print("\nInput Doctor Username:");
+        tmp = ValidateInput.ScanNextLine(scn);
+        tmpDoc.SetUsername(tmp);
+        tmp = ValidateInput.ValidatePasswrd(scn);
+        tmpDoc.SetPassword(tmp);
+        System.out.print("\nInput Doctor Name:");
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpDoc.SetName(tmp);
+        System.out.print("\nInput Doctor Surname:");
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpDoc.SetSurname(tmp);
+        System.out.println("\nInput Doctor SSN:");
+        tmp = ValidateInput.ValidateNum(scn);
+        tmpDoc.SetSSN(tmp);
+        System.out.println("\nInput Doctor Specialization:");
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpDoc.SetSpec(tmp);
+        	//Display Object's Info
+        tmpDoc.PrintInfo();
+        
+        
+        //create a ADMIN Object
+        Admin tmpAdmn = new Admin();
+        System.out.print("\nInput Admin Username:");
+        tmp = ValidateInput.ScanNextLine(scn);
+        tmpAdmn.SetUsername(tmp);
+        tmp = ValidateInput.ValidatePasswrd(scn);
+        tmpAdmn.SetPassword(tmp);
+        System.out.print("\nInput Admin Name:");
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpAdmn.SetName(tmp);
+        System.out.print("\nInput Admin Surname:");
+        tmp = ValidateInput.ValidateStr(scn);
+        tmpAdmn.SetSurname(tmp);
+        	//Display Object's Info
+        tmpAdmn.PrintInfo();
+        
+        scn.close();
+        
         
         //Step 6 - Creation of Objects based on a Given File
         ArrayList<Patient> Patients = new ArrayList<Patient>(); 
-        
         try 
         {
 			BufferedReader br = new BufferedReader(new FileReader("src/test/Patients.txt"));	
@@ -102,9 +151,9 @@ public class CreateUsers
 			
 			while ( (patientLine = br.readLine()) != null )
 			{
-				objArgs = patientLine.split("\t");
-				Patient tmp = new Patient(objArgs[0], objArgs[1], objArgs[2], objArgs[3], objArgs[4]);
-				Patients.add(tmp);
+				String[] objArgs = patientLine.split("\t");
+				Patient filePat = new Patient(objArgs[0], objArgs[1], objArgs[2], objArgs[3], objArgs[4]);
+				Patients.add(filePat);
 			}
 			
 			br.close();
@@ -123,7 +172,50 @@ public class CreateUsers
         {
         	ptnt.PrintInfo();
         }
+
         
     }	
 
+    public String ScanNextLine(Scanner scan)
+    {
+    	String tmp = scan.nextLine();
+    	return tmp;
+    }
+    
+    public String ValidateStr(Scanner scan)
+    {
+    	String tmp = scan.nextLine();
+    	while (!tmp.matches("[A-Za-z ]+")) 
+    	{
+            System.out.println("Wrong Input");
+            tmp = scan.nextLine();
+        }
+    	return tmp;
+    }
+    
+    public String ValidateNum(Scanner scan)
+    {
+    	String tmp = scan.nextLine();
+    	while (!(tmp.matches("[0-9]{10}") && tmp.length() == 10)) 
+    	{
+            System.out.println("Invalid SSN");
+            tmp = scan.nextLine();
+        }
+    	return tmp;
+    }
+    
+    public String ValidatePasswrd(Scanner scan)
+    {
+    	String tmp, tmp2;
+    	do
+        {
+	        System.out.print("\nInput Password:");
+	        tmp = scan.nextLine();
+	        System.out.print("\nRe-Input Password:");
+	        tmp2 = scan.nextLine();
+        }
+        while(!tmp.equals(tmp2));
+    	return tmp;
+    }
+        
 }

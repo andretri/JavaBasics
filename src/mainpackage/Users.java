@@ -5,18 +5,17 @@ public class Users
     public static int usersCounter = 0;
     
     private String username;
-    	@SuppressWarnings("unused")
+	@SuppressWarnings("unused")
 	private String password;
     private String name, surname;
     
     public Users(String usrname, String usrpass, String nameTmp, String surnameTmp)
     {
         ++usersCounter;
-        
-        username = usrname;
-        password = usrpass;
-        name = nameTmp;
-        surname = surnameTmp;
+        this.SetUsername(usrname);
+        this.SetPassword(usrpass);
+        this.SetName(nameTmp);
+        this.SetSurname(surnameTmp);
    }
     
     
@@ -30,11 +29,19 @@ public class Users
    }
    
    
+   public void PrintInfo()
+   {
+       System.out.println("\nUser info: ");
+       System.out.println("Username: " + GetUsername());
+       System.out.println("Name: " + GetName());
+       System.out.println("Surname: " + GetSurname());
+   }
+   
    
    /* Attribute: username Set-Get */
    public void SetUsername(String str)
    {
-        username = str;
+        this.username = str;
    }
    public String GetUsername()
    {
@@ -46,7 +53,7 @@ public class Users
    /* Attribute: password Set */
    public void SetPassword(String str)
    {
-       	password = str;
+       	this.password = str;
    }
    
    
@@ -54,7 +61,7 @@ public class Users
    /* Attribute: name Set-Get */
    public void SetName(String str)
    {
-       	name = str;
+       	this.name = str;
    }    
    public String GetName()    
    {
@@ -66,13 +73,12 @@ public class Users
    /* Attribute: surname Set-Get */
    public void SetSurname(String str)         
    {
-       	surname = str;
+       	this.surname = str;
    }
    public String GetSurname()
    {
        	return this.surname;
    }
-   
-   
+ 
    
 }

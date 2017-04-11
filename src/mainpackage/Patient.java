@@ -2,12 +2,17 @@ package mainpackage;
 
 public class Patient extends Users
 {
-    private final String SSN;
-        
-    public Patient(String usrname, String usrpass, String nameTmp, String surnameTmp, String SSNTmp)
+    private String SSN = null;
+      
+    public Patient()
+    {
+    	super("", "", "", "");
+    }
+    
+    public Patient(String usrname, String usrpass, String nameTmp, String surnameTmp, String tmpSSN)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
-        SSN = SSNTmp;
+        this.SetSSN(tmpSSN);
     }
     
     public void register(Patient patnt)
@@ -74,9 +79,10 @@ public class Patient extends Users
         		+ "all the *past* appointments for a CERTAIN (this.userName) PATIENT");
     }
     
+    @Override
     public void PrintInfo()
     {
-        System.out.println("\nUser info: ");
+        System.out.println("\nPatient info: ");
         System.out.println("Username: " + GetUsername());
         System.out.println("Name: " + GetName());
         System.out.println("Surname: " + GetSurname());
@@ -86,7 +92,15 @@ public class Patient extends Users
     
     
     //Get SSN
-     public String GetSSN()         
+    public void SetSSN(String tmpSSN) throws NumberFormatException
+    {
+        if (this.SSN == null)
+        	SSN = tmpSSN;
+        else 
+        	throw new NumberFormatException();
+    }
+    
+    public String GetSSN()         
     {
         return SSN;
     }

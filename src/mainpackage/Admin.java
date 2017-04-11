@@ -2,6 +2,11 @@ package mainpackage;
 
 public class Admin extends Users
 {
+	
+	public Admin()
+	{
+		super("", "", "", "");
+	}
     public Admin(String usrname, String usrpass, String nameTmp, String surnameTmp)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
@@ -73,7 +78,7 @@ public class Admin extends Users
     {
     	//View schedule of specific patient or doctor.
 
-        System.out.println("Schedule of user " + doc.GetName() + " is:");
+        System.out.println("Appointment Schedule of Doctor " + doc.GetName() + " is:");
         doc.ViewScheduledAppointments();
     }
     
@@ -81,14 +86,14 @@ public class Admin extends Users
     {
     	//View schedule of specific patient or doctor.
 
-        System.out.println("Schedule of user " + pat.GetName() + " is:");
+        System.out.println("Appountment Schedule of Patient " + pat.GetName() + " is:");
         pat.ViewScheduledAppointments();
     }
     
     public void ViewAppointmentHistory(Doctor doc)
     {
     	//View history of specific patient or doctor.
-        System.out.println("Appointment history of user " + doc.GetName() + " (" + doc.GetUsername() + ") " + " is:");
+        System.out.println("Appointment history of Doctor " + doc.GetName() + " (" + doc.GetUsername() + ") " + " is:");
         
         System.out.println("\nView appointment history of specific patient or doctor."
         		+ "\nA Feature WIP.\n"
@@ -101,7 +106,7 @@ public class Admin extends Users
     public void ViewAppointmentHistory(Patient pat)
     {
     	//View history of specific patient or doctor.
-        System.out.println("Appointment history of user " + pat.GetName() + " (" + pat.GetUsername() + ") " + " is:");
+        System.out.println("Appointment history of Patient " + pat.GetName() + " (" + pat.GetUsername() + ") " + " is:");
         
         System.out.println("\nView appointment history of specific patient or doctor."
         		+ "\nA Feature WIP.\n"
