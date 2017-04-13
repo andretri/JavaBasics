@@ -220,20 +220,12 @@ public class CreateUsers
     	do
         {
 	        System.out.print("\nInput Password:");
-	       
-	        tmp = scan.nextLine();
-	    	while (!tmp.equals("")) 
-	    	{
-	            System.out.println("Wrong Input");
-	            tmp = scan.nextLine();
-	        }
+	        tmp = ValidateStr(scan);
 	        System.out.print("\nRe-Input Password:");
-	        
-	        tmp2 = scan.nextLine();
-	    	while (!tmp.equals(""))
+	        tmp2 = ValidateStr(scan);
+	    	if (!tmp.equals(tmp2))
 	    	{
-	            System.out.println("Wrong Input");
-	            tmp2 = scan.nextLine();
+	            System.out.println("Passwords Do not Match! Repeat Procedure");
 	        }
         }
         while(!tmp.equals(tmp2));

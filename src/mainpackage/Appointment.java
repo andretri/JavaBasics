@@ -33,7 +33,7 @@ public class Appointment
     {
     	System.out.println("Appointment created successfully!");
     	System.out.println("Patient: "+ obj1.GetName() + " " + obj1.GetSurname() + " ("+obj1.GetSSN()+")\n"
-    					   +"Doctor: "+ obj2.GetName() + " " + obj2.GetSurname() + " ("+obj2.GetSSN()+")\n"+ " " + obj2.GetSpec());
+    					   +"Doctor: "+ obj2.GetName() + " " + obj2.GetSurname() + " ("+obj2.GetSSN()+")"+ " " + obj2.GetSpec());
     }
     
     
@@ -42,7 +42,7 @@ public class Appointment
     	//Ability to Cancel appointments between a two people.
     	System.out.println("Appointment cancelled successfully!");
     	System.out.println("Patient: "+ obj1.GetName() + " " + obj1.GetSurname() + " ("+obj1.GetSSN()+")\n"
-				   +"Doctor: "+ obj2.GetName() + " " + obj2.GetSurname() + " ("+obj2.GetSSN()+")\n"+ " " + obj2.GetSpec());
+				   +"Doctor: "+ obj2.GetName() + " " + obj2.GetSurname() + " ("+obj2.GetSSN()+")"+ " " + obj2.GetSpec());
         //"Ability to Cancel appointments between a two people."
         //"\nA Feature WIP.\n"
         //"It will be Complete once we Connect "
