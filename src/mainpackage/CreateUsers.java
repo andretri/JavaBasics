@@ -21,34 +21,34 @@ public class CreateUsers
         Patient patB = new Patient("BenedictC", "123456789", "Benedict", "Tennismatch", "2222222221");
         Doctor docA = new Doctor("DrStrange", "123456789", "Stephen", "Strange", "2222222222", "Neurosurgeon");
         Doctor docB = new Doctor("JohnApp", "1234", "Appleseed", "John", "4321876509", "Pharmaceuticals");
-        Doctor docC = new Doctor("DocWho", "T@rd!$", "Smith", "John", "0000000000", "Time Travel");
+        Doctor docC = new Doctor("DocWho", "T@rd!$", "Smith", "John", "0000000000", "Dermatologist");
         
 
         //Patient Methods
         System.out.println("Below are methods of the class Patient:\n");
-        patA.login();
+        patA.Login();
         patA.PrintInfo();
-        patA.SearchAppointmentDoc(docA.GetName());
-        patA.SearchAppointmentSpc(docB.GetSpec());
+        patA.SearchAppointmentDoc(docA, "14-4-2017");
+        patA.SearchAppointmentSpc(docB.GetSpec(), "20-4-2017");
         patA.ViewAppointmentHistory();
         patA.ViewScheduledAppointments();
-        patA.logout();
+        patA.Logout();
         
         
 
         //Doctor Methods
         System.out.println("Below are methods of the class Doctor:\n");
-        docC.login();
+        docC.Login();
         docC.PrintInfo();
         docC.EditDocAvailability();
         docC.ViewAppointmentHistory();
         docC.ViewScheduledAppointments();
-        docC.logout();
+        docC.Logout();
 
         
         //Administrator Methods
         System.out.println("Below are methods of the class Admin:\n");
-        nimda.login();
+        nimda.Login();
         nimda.RegisterDoctor(docA);
         nimda.RegisterDoctor(docB);
         nimda.RegisterDoctor(docC);
@@ -63,7 +63,7 @@ public class CreateUsers
         nimda.ViewAppointmentHistory(docC);
         nimda.ViewAppointmentHistory(patB);
 
-        nimda.logout();
+        nimda.Logout();
         
         
         //Appointment Methods

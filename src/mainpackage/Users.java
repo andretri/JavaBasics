@@ -19,11 +19,11 @@ public class Users
    }
     
     
-   public void login()
+   public void Login()
    {
         System.out.println("Welcome, "+ this.GetUsername());
    }
-   public void logout()
+   public void Logout()
    {
         System.out.println("Goodbye, "+ this.GetUsername());
    }
@@ -32,7 +32,7 @@ public class Users
    public void PrintInfo()
    {
        System.out.println("\nUser info: ");
-       System.out.println("Username: " + GetUsername());
+       System.out.println("username: " + GetUsername());
        System.out.println("Name: " + GetName());
        System.out.println("Surname: " + GetSurname());
    }
@@ -80,5 +80,9 @@ public class Users
        	return this.surname;
    }
  
+   public int GetUsersCounter()
+   {
+	   return Users.usersCounter;
+   }
    
 }

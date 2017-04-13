@@ -23,10 +23,10 @@ public class Patient extends Users
     
     	
     
-    public void SearchAppointmentDoc(String doctorName)
+    public void SearchAppointmentDoc(Doctor doc, String date)
     {
     	//Search to find days and time for appointments for a specific doctor.
-        System.out.println("Results for Dr " + doctorName + " are:");
+        System.out.println("Results for Dr " + doc.GetName() + " (" + doc.GetSSN() +") " + " @"+date+" are:");
         
         System.out.println("Search to find days and time for appointments for a specific doctor."
         		+ "\nA Feature WIP.\n"
@@ -38,10 +38,10 @@ public class Patient extends Users
     
     
     
-    public void SearchAppointmentSpc(String doctorSpecialty)
+    public void SearchAppointmentSpc(String doctorSpecialty, String date)
     {
     	//Search to find days and time for appointments for a specific specialization.
-        System.out.println("Results for the specialization " + doctorSpecialty + " are:");
+        System.out.println("Results for the specialization " + doctorSpecialty + " @"+date+" are:");
         
         System.out.println("Search to find days and time for appointments for a specific specialization."
         		+ "\nA Feature WIP.\n"

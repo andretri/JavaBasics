@@ -8,3 +8,7 @@ nbproject/genfiles\.properties
 nbproject/
 /build/
 test/
+
+src/Documentation/
+
+documentation/

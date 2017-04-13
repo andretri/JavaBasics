@@ -21,10 +21,10 @@ public class Admin extends Users
         System.out.println("Doctor's Data:");
         newDoc.PrintInfo();
         
-        System.out.println("\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect "
-        		+ "Java to a Database, which will hold (insert into DB) "
-        		+ "all the REGISTERED DOCTORS");
+        //\nA Feature WIP.\n
+        //It will be Complete once we Connect 
+        //Java to a Database, which will hold (insert into DB) 
+        //all the REGISTERED DOCTORS")
     }
     
     
@@ -36,10 +36,10 @@ public class Admin extends Users
         System.out.println("Patient's Data:");
         newPat.PrintInfo();
         
-        System.out.println("\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect "
-        		+ "Java to a Database, which will hold (insert into DB) "
-        		+ "all the REGISTERED PATIENTS");
+        //"\nA Feature WIP.\n"
+        //"It will be Complete once we Connect "
+        //"Java to a Database, which will hold (insert into DB) "
+        //"all the REGISTERED PATIENTS");
     }
     
     
@@ -49,10 +49,10 @@ public class Admin extends Users
     	//Delete doctor.
     	System.out.println("Dr. " + delDoc.GetSurname() +", SSN:" + delDoc.GetSSN() + ") deleted successfully.");
     	
-    	System.out.println("\nA Feature WIP.\n"
-    			+ "It will be Complete once we Connect "
-    			+ "Java to a Database, which the function will modify "
-    			+ "(delete) a selected *doctor* based on his SSN (delDoc.SSN).");
+    	//"\nA Feature WIP.\n"
+    	//"It will be Complete once we Connect "
+    	//"Java to a Database, which the function will modify "
+    	//"(delete) a selected *doctor* based on his SSN (delDoc.SSN).");
     	
     	delDoc = null;
     }
@@ -64,10 +64,10 @@ public class Admin extends Users
     	//Delete patient.
     	System.out.println("Mr/Mrs. " + delPat.GetSurname() +", SSN:" + delPat.GetSSN() + ") deleted successfully.");
         
-        System.out.println("\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect "
-        		+ "Java to a Database, which the function will modify "
-        		+ "(delete) a selected *patient* based on his SSN (delPat.SSN).");
+        //"\nA Feature WIP.\n"
+        //"It will be Complete once we Connect "
+        //"Java to a Database, which the function will modify "
+        //"(delete) a selected *patient* based on his SSN (delPat.SSN).");
         
         delPat = null;
     }
