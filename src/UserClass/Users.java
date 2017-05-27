@@ -1,4 +1,4 @@
-package mainpackage;
+package UserClass;
 
 public class Users 
 {
