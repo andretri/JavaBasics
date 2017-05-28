@@ -43,7 +43,6 @@ public class Patient extends Users
         return  "select APPOINTMENTS.t, DOCTOR.surname, DOCTOR.name, DEPARTMENTS.name"+
         		"from (APPOINTMENTS natural join DOCTOR) inner join DEPARTMENTS on DOCTOR.specialty = DEPARTMENTS.id"+
         		"where DOCTOR.specialty = ? and APPOINTMENTS.t::date = ?::date; and APPOINTMENTS.patientAMKA is null and APPOINTMENTS.status is null";
-        
     }
     
     
@@ -54,7 +53,6 @@ public class Patient extends Users
     	return "SELECT A.t as date, 'Dr. ' || DOCTOR.surname as doc_name,  DPT.name as dpt_name, DOCTOR.doctorAMKA as AMKA\r\n" + 
 		"FROM (APPOINTMENTS as A natural join DOCTOR) inner join DEPARTMENTS as DPT on DOCTOR.specialty = DPT.id\r\n" + 
 		"WHERE A.patientAMKA = ? and A.status = false;";
-
     }
     
     public String ViewAppointmentHistory()
@@ -65,7 +63,7 @@ public class Patient extends Users
         		"WHERE A.patientAMKA = ? and A.status = true;";
     }
     
-    public static String FetchDBData()
+    public static String AuthenticatePatient()
     {
     	return "SELECT * FROM PATIENT WHERE userid = ? and password = ?";
     }

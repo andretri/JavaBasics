@@ -15,7 +15,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import javax.swing.text.html.HTML;
+
+import org.apache.catalina.servlet4preview.ServletContext;
 
 import UserClass.Patient;
 
@@ -27,6 +31,7 @@ public class PatientServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	private DataSource ds = null;
+	HttpSession usrSession;
 	Patient tmpPatient;
     /**
      * @see HttpServlet#HttpServlet()
@@ -57,12 +62,13 @@ public class PatientServlet extends HttpServlet
 		PrintWriter out = response.getWriter();
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
+		response.setCharacterEncoding("UTF-8");	
 		
 		String requestType= request.getParameter("requestType");
+//======================================================================================================================================================requestType ERROR		
 		if (requestType == null) createMsgPage(request, response, "Sign-in Error" ,"Invalid request type", out);
-		
-		if (requestType.equalsIgnoreCase("signin")) 
+//============================================================================================================================================requestType PATIENT SIGN IN		
+		else if (requestType.equalsIgnoreCase("signin")) 
 		{
 			String usrname = request.getParameter("usrname");
 			String passwrd = request.getParameter("passwrd");
@@ -70,15 +76,15 @@ public class PatientServlet extends HttpServlet
 			try 
 			{
 				Connection con = ds.getConnection();
-//==============================================HTML CODE START==============================================			    
+//=========================HTML CODE START==========================			    
 				out.println("<!DOCTYPE html>\r\n" + 
 						"<html>");
 				out.println("<head><title>Patient Dashboard</title></head>");
 				out.println("<body>");
-//==============================================HTML CODE FINISH==============================================
+//=========================HTML CODE FINISH=========================
 				    
-//==============================================FETCH PATIENT'S DATA -- START============================================== 
-			    PreparedStatement loginPatient = con.prepareStatement(Patient.FetchDBData(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+//=================FETCH PATIENT'S DATA -- START====================
+			    PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			    loginPatient.setString(1, usrname);	loginPatient.setString(2, passwrd);
 			    ResultSet rs = loginPatient.executeQuery();
 				createFinTable(out, true);
@@ -91,78 +97,155 @@ public class PatientServlet extends HttpServlet
 			    
 				createFinTable(out, false);
 				rs.close();	loginPatient.close();
-//==============================================FETCH PATIENT'S DATA -- FINISH==============================================
-				
-//==============================================FETCH PATIENT'S APPOINTMENT HISTORY -- START============================================== 
-				out.println("<h1>Appointment History</h1>");
-				PreparedStatement ViewAppointmentHistory = con.prepareStatement(tmpPatient.ViewAppointmentHistory(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-				ViewAppointmentHistory.setLong(1, tmpPatient.GetSSN());
-				ResultSet appmnt = ViewAppointmentHistory.executeQuery();
-				
-				createFinTable(out, true);
-				htmlRow = createTable(appmnt);			
-				out.println(htmlRow);
-				createFinTable(out, false);
-			    
-				appmnt.close();	con.close();
-//==============================================FETCH PATIENT'S APPOINTMENT HISTORY -- FINISH==============================================
-				
-//==============================================HTML CODE START==============================================				
+//=================FETCH PATIENT'S DATA -- FINISH===================
+		
+//=========================HTML CODE START==========================				
+				out.println("<p> <form action='../UserServlet/patient' method='post'>"
+						  + "<button type='submit' name='requestType' value='appnmtHistry'>"
+						  + "View Appointment History </button>"
+						  + "</form> </p>");
+				out.println("<p> <form action='../UserServlet/patient' method='post'>"
+						  + "<button type='submit' name='requestType' value='appmntPndng'>"
+						  + "View Pending Appointments</button>"
+						  + "</form> </p>");
+				out.println("<p> <form action='../UserServlet/patient' method='post'>"
+						  + "<button type='submit' name='requestType' value='signout'>"
+						  + "Sign-Out</button>"
+						  + "</form> </p>");
 				out.println("</body>");
 				out.println("</html>");
-//==============================================HTML CODE FINISH==============================================
-			} 
+//=========================HTML CODE FINISH=========================
+			}
 			catch(SQLException sqle) 
 			{
 				sqle.printStackTrace();
 			}
 		} 
+//==================================================================================================================================requestType PATIENT PAST APPOINTMENTS
+		else if(requestType.equalsIgnoreCase("appnmtHistry"))
+		{
+			try
+			{
+				Connection con = ds.getConnection();
+//=========================HTML CODE START==========================
+				out.println("<!DOCTYPE html>\r\n <html>");
+				out.println("<head><title>Appointment History</title></head>");
+				out.println("<body>");
+				out.println("<h4>Patient:"+tmpPatient.GetSurname()+", "+tmpPatient.GetName()+" ("+tmpPatient.GetUsername()+")</h4>");
+//=========================HTML CODE FINISH=========================		
+				
+//===========VIEW PATIENT'S PAST APPOINTMENTS -- FINISH=============				
+				PreparedStatement ViewAppointmentHistory = con.prepareStatement(tmpPatient.ViewAppointmentHistory(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				ViewAppointmentHistory.setLong(1, tmpPatient.GetSSN());
+				ResultSet appmnt = ViewAppointmentHistory.executeQuery();
+				
+				createFinTable(out, true);
+				String htmlRow = createTable(appmnt);			
+				out.println(htmlRow);
+				createFinTable(out, false);
+				//out.println("<p> <form action='../UserServlet/patient' method='post'>"
+				//		+ "<button type='submit' name='requestType' value='appmntPndng'>"
+				//		+ "View Pending Appointments</button>"
+				//		+ "</form> </p>");
+				out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
+				appmnt.close();	con.close();
+//===========VIEW PATIENT'S PAST APPOINTMENTS -- FINISH=============
+				
+//=========================HTML CODE START==========================			
+				out.println("</body> </html>");
+//=========================HTML CODE FINISH=========================				
+			}
+			catch(SQLException sqle)
+			{
+				sqle.printStackTrace();
+			}
+		}
+//===============================================================================================================================requestType PATIENT PENDING APPOINTMENTS
+		else if(requestType.equalsIgnoreCase("appmntPndng"))
+		{
+			try
+			{
+				Connection con = ds.getConnection();
+//=========================HTML CODE START==========================
+				out.println("<!DOCTYPE html>\r\n <html>");
+				out.println("<head><title>Pending Appointments</title></head>");			
+				out.println("<body>");
+				out.println("<h4>Patient:"+tmpPatient.GetSurname()+", "+tmpPatient.GetName()+" ("+tmpPatient.GetUsername()+")</h4>");
+//=========================HTML CODE FINISH=========================
+
+//===========VIEW PATIENT'S PENDING APPOINTMENTS -- START===========
+				PreparedStatement ViewPendingAppointments = con.prepareStatement(tmpPatient.ViewScheduledAppointments(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				ViewPendingAppointments.setLong(1, tmpPatient.GetSSN());
+				ResultSet appmnt = ViewPendingAppointments.executeQuery();
+				
+				createFinTable(out, true);
+				String htmlRow = createTable(appmnt);			
+				out.println(htmlRow);
+				createFinTable(out, false);
+				//out.println("<p> <form action='../UserServlet/patient' method='post'>"
+				//		  + "<button type='submit' name='requestType' value='appnmtHistry'>"
+				//		  + "View Appointment History </button>"
+				//		  + "</form> </p>");
+				out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
+				appmnt.close();	con.close();
+//==========VIEW PATIENT'S PENDING APPOINTMENTS -- FINISH===========
+				
+//=========================HTML CODE START==========================			
+				out.println("</body> </html>");
+//=========================HTML CODE FINISH=========================				
+			}
+			catch(SQLException sqle)
+			{
+				sqle.printStackTrace();
+			}
+		}
+//===========================================================================================================================================requestType PATIENT REGISTER
 		else if (requestType.equalsIgnoreCase("register")) 
 		{
 			Long AMKA = Long.parseLong(request.getParameter("amka"));
-			String usrname = request.getParameter("userid");
+			String usrname = request.getParameter("usrname");
 			String passwrd = request.getParameter("passwrd");
 			String name = request.getParameter("name");
 			String surname = request.getParameter("surname");
 			String gender = request.getParameter("gender");
 			
-			String htmlRow = null;
 			try 
 			{
 				Connection con = ds.getConnection();
 				tmpPatient = new Patient(usrname, passwrd, name, surname, AMKA, gender);
-//==============================================HTML CODE START==============================================			    
+//=========================HTML CODE START==========================		    
 				out.println("<!DOCTYPE html>\r\n" + 
 						"<html>");
 				out.println("<head><title>Patient Registration</title></head>");
 				out.println("<body>");
-//==============================================HTML CODE FINISH==============================================
+//=========================HTML CODE FINISH=========================
 				    
-//==============================================REGISTER PATIENT'S DATA -- START============================================== 
+//=================REGISTER PATIENT'S DATA -- START=================
 			    PreparedStatement registerPatient = con.prepareStatement(tmpPatient.RegisterPatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			    registerPatient.setLong(1, AMKA);	
-			    registerPatient.setString(2, usrname);
-			    registerPatient.setString(3, passwrd);
-			    registerPatient.setString(4, name);
-			    registerPatient.setString(5, surname);
-			    registerPatient.setString(6, gender);
-			    
+			    registerPatient.setLong(1, AMKA);		registerPatient.setString(4, name);
+			    registerPatient.setString(2, usrname); 	registerPatient.setString(5, surname);
+			    registerPatient.setString(3, passwrd);	registerPatient.setString(6, gender);
+
 			    registerPatient.executeUpdate();
+			    String tmp = "Patient: "+surname+", "+name+" ("+AMKA+") Registered Succesfully";
+			    			 //+"<form action='../UserServlet/patient' method='post'> <button type='submit' name='requestType' value='signin'>Visit Dashboard</button> </form>";
 			    
-			    createMsgPage(request, response, "Successful Registration", "Patient: "+surname+", "+name+" ("+AMKA+") Registered Succesfully", out);
-				
+			    createMsgPage(request, response, "Successful Registration", tmp, out);
 			    registerPatient.close();
-//==============================================REGISTER PATIENT'S DATA -- FINISH==============================================
+//================REGISTER PATIENT'S DATA -- FINISH=================
 				
-//==============================================HTML CODE START==============================================				
-				out.println("</body>");
-				out.println("</html>");
-//==============================================HTML CODE FINISH==============================================
+//=========================HTML CODE START==========================			
+				out.println("</body> </html>");
+//=========================HTML CODE FINISH=========================
 			} 
 			catch(SQLException sqle) 
 			{
 				sqle.printStackTrace();
 			}
+		}
+		else if(requestType.equalsIgnoreCase("signout"))
+		{
+			response.sendRedirect("../index.html");
 		}
 		else 
 		{
@@ -170,6 +253,7 @@ public class PatientServlet extends HttpServlet
 		}
 	}
 	
+
 	public void createFinTable(PrintWriter out, Boolean flag)
 	{
 		if(flag.equals(true))
