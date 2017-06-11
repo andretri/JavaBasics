@@ -17,9 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import javax.swing.text.html.HTML;
-
-import org.apache.catalina.servlet4preview.ServletContext;
 
 import UserClass.Patient;
 
@@ -31,8 +28,6 @@ public class PatientServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 	private DataSource ds = null;
-	HttpSession usrSession;
-	Patient tmpPatient;
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -64,69 +59,100 @@ public class PatientServlet extends HttpServlet
 		response.setContentType("text/html; charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");	
 		
-		String requestType= request.getParameter("requestType");
+		String requestType= (String)request.getParameter("status");
 //======================================================================================================================================================requestType ERROR		
 		if (requestType == null) createMsgPage(request, response, "Sign-in Error" ,"Invalid request type", out);
 //============================================================================================================================================requestType PATIENT SIGN IN		
 		else if (requestType.equalsIgnoreCase("signin")) 
 		{
-			String usrname = request.getParameter("usrname");
-			String passwrd = request.getParameter("passwrd");
-			String htmlRow = null;
+			response.setHeader("Cache-Control", "no-cache");
+			//Forces caches to obtain a new copy of the page from the origin server
+			response.setHeader("Cache-Control", "no-store");
+			//Directs caches not to store the page under any circumstance
+			response.setDateHeader("Expires", 0);
+			//Causes the proxy cache to see the page as "stale"
+			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+			//HTTP 1.0 backward enter code here
+			HttpSession usrSession = request.getSession(false);
 			try 
 			{
-				Connection con = ds.getConnection();
+				synchronized (usrSession)
+				{			
+					String usrname = (String)usrSession.getAttribute("usrname");
+					String passwrd = (String)usrSession.getAttribute("passwrd");
+					String htmlRow = null;
+					
+					Connection con = ds.getConnection();
+					Patient tmpPatient = null;
 //=========================HTML CODE START==========================			    
-				out.println("<!DOCTYPE html>\r\n" + 
-						"<html>");
-				out.println("<head><title>Patient Dashboard</title></head>");
-				out.println("<body>");
+					out.println("<!DOCTYPE html>\r\n <html>");
+					out.println("<head><title>Patient Dashboard</title></head>");
+					out.println("<body>");
 //=========================HTML CODE FINISH=========================
 				    
 //=================FETCH PATIENT'S DATA -- START====================
-			    PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			    loginPatient.setString(1, usrname);	loginPatient.setString(2, passwrd);
-			    ResultSet rs = loginPatient.executeQuery();
-				createFinTable(out, true);
-				while(rs.next())
-				{	
-					tmpPatient = new Patient(rs.getString("userid"), rs.getString("password"), rs.getString("name"), rs.getString("surname"), rs.getLong("patientAMKA"), rs.getString("gender"));
-				}
-				htmlRow = createTable(rs);
-			    out.println(htmlRow);
-			    
-				createFinTable(out, false);
-				rs.close();	loginPatient.close();
+					PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+					loginPatient.setString(1, usrname);	loginPatient.setString(2, passwrd);
+					
+					ResultSet rs = loginPatient.executeQuery();
+					createFinTable(out, true);
+					while(rs.next())
+					{	
+						tmpPatient = new Patient(rs.getString("userid"), rs.getString("password"), rs.getString("name"), rs.getString("surname"), rs.getLong("patientAMKA"), rs.getString("gender"));
+					}
+					usrSession.setAttribute("tmPatient", tmpPatient);
+					htmlRow = createTable(rs);
+					out.println(htmlRow);
+					
+					createFinTable(out, false);
+					rs.close();	loginPatient.close();
 //=================FETCH PATIENT'S DATA -- FINISH===================
 		
 //=========================HTML CODE START==========================				
-				out.println("<p> <form action='../UserServlet/patient' method='post'>"
-						  + "<button type='submit' name='requestType' value='appnmtHistry'>"
-						  + "View Appointment History </button>"
-						  + "</form> </p>");
-				out.println("<p> <form action='../UserServlet/patient' method='post'>"
-						  + "<button type='submit' name='requestType' value='appmntPndng'>"
-						  + "View Pending Appointments</button>"
-						  + "</form> </p>");
-				out.println("<p> <form action='../UserServlet/patient' method='post'>"
-						  + "<button type='submit' name='requestType' value='signout'>"
-						  + "Sign-Out</button>"
-						  + "</form> </p>");
-				out.println("</body>");
-				out.println("</html>");
+					out.println("<p> <form action='../UserServlet/patient' method='post'>"
+							+ "<button type='submit' name='status' value='appnmtHistry'>"
+							+ "View Appointment History </button>"
+							+ "</form> </p>");
+					out.println("<p> <form action='../UserServlet/patient' method='post'>"
+							+ "<button type='submit' name='status' value='appmntPndng'>"
+							+ "View Pending Appointments</button>"
+							+ "</form> </p>");
+					out.println("<p> <form action='../UserServlet/patient' method='post'>"
+							+ "<button type='submit' name='status' value='signout'>"
+							+ "Sign-Out</button>"
+							+ "</form> </p>");
+					out.println("</body>");
+					out.println("</html>");
 //=========================HTML CODE FINISH=========================
+				}
 			}
 			catch(SQLException sqle) 
-			{
+			{	
 				sqle.printStackTrace();
+			}
+			catch(NullPointerException nlptre)
+			{
+				response.sendRedirect(request.getContextPath() + "/patient-login.html");
 			}
 		} 
 //==================================================================================================================================requestType PATIENT PAST APPOINTMENTS
 		else if(requestType.equalsIgnoreCase("appnmtHistry"))
 		{
+			response.setHeader("Cache-Control", "no-cache");
+			//Forces caches to obtain a new copy of the page from the origin server
+			response.setHeader("Cache-Control", "no-store");
+			//Directs caches not to store the page under any circumstance
+			response.setDateHeader("Expires", 0);
+			//Causes the proxy cache to see the page as "stale"
+			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+			//HTTP 1.0 backward enter code here
 			try
 			{
+				HttpSession usrSession = request.getSession(false);
+				synchronized (usrSession)
+				{
 				Connection con = ds.getConnection();
+				Patient tmpPatient = (Patient)usrSession.getAttribute("tmPatient");
 //=========================HTML CODE START==========================
 				out.println("<!DOCTYPE html>\r\n <html>");
 				out.println("<head><title>Appointment History</title></head>");
@@ -143,29 +169,47 @@ public class PatientServlet extends HttpServlet
 				String htmlRow = createTable(appmnt);			
 				out.println(htmlRow);
 				createFinTable(out, false);
-				//out.println("<p> <form action='../UserServlet/patient' method='post'>"
-				//		+ "<button type='submit' name='requestType' value='appmntPndng'>"
-				//		+ "View Pending Appointments</button>"
-				//		+ "</form> </p>");
-				out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
+				out.println("<p> <form action='../UserServlet/patient' method='post'>"
+						+ "<button type='submit' name='status' value='appmntPndng'>"
+						+ "View Pending Appointments</button>"
+						+ "</form> </p>");
+				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
+				out.println("<form action='../UserServlet/patient' method='post'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
 				appmnt.close();	con.close();
 //===========VIEW PATIENT'S PAST APPOINTMENTS -- FINISH=============
 				
 //=========================HTML CODE START==========================			
 				out.println("</body> </html>");
 //=========================HTML CODE FINISH=========================				
+				}
 			}
 			catch(SQLException sqle)
 			{
 				sqle.printStackTrace();
 			}
+			catch(NullPointerException nlptre)
+			{
+				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+			}
 		}
 //===============================================================================================================================requestType PATIENT PENDING APPOINTMENTS
 		else if(requestType.equalsIgnoreCase("appmntPndng"))
 		{
+			response.setHeader("Cache-Control", "no-cache");
+			//Forces caches to obtain a new copy of the page from the origin server
+			response.setHeader("Cache-Control", "no-store");
+			//Directs caches not to store the page under any circumstance
+			response.setDateHeader("Expires", 0);
+			//Causes the proxy cache to see the page as "stale"
+			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+			//HTTP 1.0 backward enter code here
 			try
 			{
+				HttpSession usrSession = request.getSession(false);
+				synchronized (usrSession)
+				{
 				Connection con = ds.getConnection();
+				Patient tmpPatient = (Patient)usrSession.getAttribute("tmPatient");
 //=========================HTML CODE START==========================
 				out.println("<!DOCTYPE html>\r\n <html>");
 				out.println("<head><title>Pending Appointments</title></head>");			
@@ -182,26 +226,42 @@ public class PatientServlet extends HttpServlet
 				String htmlRow = createTable(appmnt);			
 				out.println(htmlRow);
 				createFinTable(out, false);
-				//out.println("<p> <form action='../UserServlet/patient' method='post'>"
-				//		  + "<button type='submit' name='requestType' value='appnmtHistry'>"
-				//		  + "View Appointment History </button>"
-				//		  + "</form> </p>");
-				out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
+				out.println("<p> <form action='../UserServlet/patient' method='post'>"
+						  + "<button type='submit' name='status' value='appnmtHistry'>"
+						  + "View Appointment History </button>"
+						  + "</form> </p>");
+				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
+				out.println("<form action='../UserServlet/patient' method='post'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
 				appmnt.close();	con.close();
 //==========VIEW PATIENT'S PENDING APPOINTMENTS -- FINISH===========
 				
 //=========================HTML CODE START==========================			
 				out.println("</body> </html>");
 //=========================HTML CODE FINISH=========================				
+				}
 			}
 			catch(SQLException sqle)
 			{
 				sqle.printStackTrace();
 			}
+			catch(NullPointerException nlptre)
+			{
+				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+			}
 		}
 //===========================================================================================================================================requestType PATIENT REGISTER
 		else if (requestType.equalsIgnoreCase("register")) 
 		{
+			response.setHeader("Cache-Control", "no-cache");
+			//Forces caches to obtain a new copy of the page from the origin server
+			response.setHeader("Cache-Control", "no-store");
+			//Directs caches not to store the page under any circumstance
+			response.setDateHeader("Expires", 0);
+			//Causes the proxy cache to see the page as "stale"
+			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+			//HTTP 1.0 backward enter code here
+			HttpSession usrSession = request.getSession();
+			
 			Long AMKA = Long.parseLong(request.getParameter("amka"));
 			String usrname = request.getParameter("usrname");
 			String passwrd = request.getParameter("passwrd");
@@ -212,7 +272,7 @@ public class PatientServlet extends HttpServlet
 			try 
 			{
 				Connection con = ds.getConnection();
-				tmpPatient = new Patient(usrname, passwrd, name, surname, AMKA, gender);
+				Patient tmpPatient = new Patient(usrname, passwrd, name, surname, AMKA, gender);
 //=========================HTML CODE START==========================		    
 				out.println("<!DOCTYPE html>\r\n" + 
 						"<html>");
@@ -228,7 +288,7 @@ public class PatientServlet extends HttpServlet
 
 			    registerPatient.executeUpdate();
 			    String tmp = "Patient: "+surname+", "+name+" ("+AMKA+") Registered Succesfully";
-			    			 //+"<form action='../UserServlet/patient' method='post'> <button type='submit' name='requestType' value='signin'>Visit Dashboard</button> </form>";
+			    out.println("<form action='../UserServlet/patient' method='post'> <button type='submit' name='status' value='signin'>Visit Dashboard</button> </form>");
 			    
 			    createMsgPage(request, response, "Successful Registration", tmp, out);
 			    registerPatient.close();
@@ -242,14 +302,35 @@ public class PatientServlet extends HttpServlet
 			{
 				sqle.printStackTrace();
 			}
+			finally
+			{
+				usrSession.setAttribute("usrname", usrname);
+				usrSession.setAttribute("passwrd", passwrd);
+			}
 		}
 		else if(requestType.equalsIgnoreCase("signout"))
 		{
-			response.sendRedirect("../index.html");
-		}
-		else 
-		{
-			createMsgPage(request, response, "Registration Error" ,"The request type parameter must be insert", out);
+			response.setHeader("Cache-Control", "no-cache");
+			//Forces caches to obtain a new copy of the page from the origin server
+			response.setHeader("Cache-Control", "no-store");
+			//Directs caches not to store the page under any circumstance
+			response.setDateHeader("Expires", 0);
+			//Causes the proxy cache to see the page as "stale"
+			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+			//HTTP 1.0 backward enter code here
+			try
+			{
+				HttpSession usrSession = request.getSession(false);
+				synchronized (usrSession)
+				{
+					usrSession.invalidate();
+					response.sendRedirect("../index.html");
+				}
+			}
+			catch(NullPointerException nlptre)
+			{
+				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+			}
 		}
 	}
 	
