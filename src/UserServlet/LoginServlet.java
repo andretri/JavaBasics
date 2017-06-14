@@ -78,7 +78,7 @@ public class LoginServlet extends HttpServlet
 				HttpSession tmp = request.getSession(false);
 				if (tmp != null)
 				{
-					request.getRequestDispatcher("/patient?status=signin").forward(request, response);
+					response.sendRedirect(request.getContextPath() +"/patient?status=signin");
 				}
 				else
 				{
@@ -101,14 +101,14 @@ public class LoginServlet extends HttpServlet
 					if (authName.equals(uname) && authPass.equals(upass))
 					{
 						HttpSession usrSession = request.getSession();
-						usrSession.setAttribute("usrname", authName);
-						usrSession.setAttribute("passwrd", authPass);
+						usrSession.setAttribute("usrname", uname);
+						usrSession.setAttribute("passwrd", upass);
 						
-						request.getRequestDispatcher("/patient?status=signin").forward(request, response);
+						response.sendRedirect(request.getContextPath() +"/patient?status=signin");
 					}	
 					else
 					{
-						out.println("<script type=\"text/javascript\"> alert(\"Wrong username or password\nRedirecting to Sign-in Page...\"); \"</script>\");");
+						out.println("<script type=\"text/javascript\"> alert(\"Wrong username or password...\nCheck again your Credentials. \"); \"</script>\");");
 						//RequestDispatcher rd = request.getRequestDispatcher("../patient-login.html");
 						//rd.forward(request, response);
 						response.sendRedirect(request.getContextPath() + "/patient-login.html");

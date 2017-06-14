@@ -12,3 +12,5 @@ test/
 src/Documentation/
 
 documentation/
+
+\.classpath

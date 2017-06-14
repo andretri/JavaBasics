@@ -61,7 +61,11 @@ public class PatientServlet extends HttpServlet
 		
 		String requestType= (String)request.getParameter("status");
 //======================================================================================================================================================requestType ERROR		
-		if (requestType == null) createMsgPage(request, response, "Sign-in Error" ,"Invalid request type", out);
+		if (requestType == null) 
+		{
+			createMsgPage(request, response, "Sign-in Error" ,"Invalid request type", out);
+			return;
+		}
 //============================================================================================================================================requestType PATIENT SIGN IN		
 		else if (requestType.equalsIgnoreCase("signin")) 
 		{
@@ -109,15 +113,15 @@ public class PatientServlet extends HttpServlet
 //=================FETCH PATIENT'S DATA -- FINISH===================
 		
 //=========================HTML CODE START==========================				
-					out.println("<p> <form action='../UserServlet/patient' method='post'>"
+					out.println("<p> <form action='/javaHospital/patient' method='get'>"
 							+ "<button type='submit' name='status' value='appnmtHistry'>"
 							+ "View Appointment History </button>"
 							+ "</form> </p>");
-					out.println("<p> <form action='../UserServlet/patient' method='post'>"
+					out.println("<p> <form action='/javaHospital/patient' method='get'>"
 							+ "<button type='submit' name='status' value='appmntPndng'>"
 							+ "View Pending Appointments</button>"
 							+ "</form> </p>");
-					out.println("<p> <form action='../UserServlet/patient' method='post'>"
+					out.println("<p> <form action='/javaHospital/patient' method='get'>"
 							+ "<button type='submit' name='status' value='signout'>"
 							+ "Sign-Out</button>"
 							+ "</form> </p>");
@@ -169,12 +173,12 @@ public class PatientServlet extends HttpServlet
 				String htmlRow = createTable(appmnt);			
 				out.println(htmlRow);
 				createFinTable(out, false);
-				out.println("<p> <form action='../UserServlet/patient' method='post'>"
+				out.println("<p> <form action='/javaHospital/patient' method='get'>"
 						+ "<button type='submit' name='status' value='appmntPndng'>"
 						+ "View Pending Appointments</button>"
 						+ "</form> </p>");
 				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
-				out.println("<form action='../UserServlet/patient' method='post'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
+				out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
 				appmnt.close();	con.close();
 //===========VIEW PATIENT'S PAST APPOINTMENTS -- FINISH=============
 				
@@ -226,12 +230,12 @@ public class PatientServlet extends HttpServlet
 				String htmlRow = createTable(appmnt);			
 				out.println(htmlRow);
 				createFinTable(out, false);
-				out.println("<p> <form action='../UserServlet/patient' method='post'>"
-						  + "<button type='submit' name='status' value='appnmtHistry'>"
-						  + "View Appointment History </button>"
-						  + "</form> </p>");
+				out.println("<p> <form action='/javaHospital/patient' method='get'>"
+						+ "<button type='submit' name='status' value='appnmtHistry'>"
+						+ "View Appointment History </button>"
+						+ "</form> </p>");
 				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
-				out.println("<form action='../UserServlet/patient' method='post'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
+				out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
 				appmnt.close();	con.close();
 //==========VIEW PATIENT'S PENDING APPOINTMENTS -- FINISH===========
 				
@@ -288,7 +292,7 @@ public class PatientServlet extends HttpServlet
 
 			    registerPatient.executeUpdate();
 			    String tmp = "Patient: "+surname+", "+name+" ("+AMKA+") Registered Succesfully";
-			    out.println("<form action='../UserServlet/patient' method='post'> <button type='submit' name='status' value='signin'>Visit Dashboard</button> </form>");
+			    out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Visit Dashboard</button> </form>");
 			    
 			    createMsgPage(request, response, "Successful Registration", tmp, out);
 			    registerPatient.close();
@@ -324,7 +328,7 @@ public class PatientServlet extends HttpServlet
 				synchronized (usrSession)
 				{
 					usrSession.invalidate();
-					response.sendRedirect("../index.html");
+					response.sendRedirect(request.getContextPath() + "/index.html");
 				}
 			}
 			catch(NullPointerException nlptre)
@@ -334,6 +338,9 @@ public class PatientServlet extends HttpServlet
 		}
 	}
 	
+	protected void doGet(HttpServletRequest request, HttpServletResponse   response) throws ServletException, IOException {
+        doPost(request, response);
+	}
 
 	public void createFinTable(PrintWriter out, Boolean flag)
 	{
