@@ -109,7 +109,7 @@ public class PatientServlet extends HttpServlet
 					out.println(htmlRow);
 					
 					createFinTable(out, false);
-					rs.close();	loginPatient.close();
+					rs.close();	loginPatient.close(); con.close();
 //=================FETCH PATIENT'S DATA -- FINISH===================
 		
 //=========================HTML CODE START==========================				
@@ -179,7 +179,7 @@ public class PatientServlet extends HttpServlet
 						+ "</form> </p>");
 				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
 				out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
-				appmnt.close();	con.close();
+				appmnt.close();	ViewAppointmentHistory.close(); con.close();
 //===========VIEW PATIENT'S PAST APPOINTMENTS -- FINISH=============
 				
 //=========================HTML CODE START==========================			
@@ -236,7 +236,7 @@ public class PatientServlet extends HttpServlet
 						+ "</form> </p>");
 				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
 				out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Return to Dashboard</button> </form>");
-				appmnt.close();	con.close();
+				appmnt.close(); ViewPendingAppointments.close(); con.close();
 //==========VIEW PATIENT'S PENDING APPOINTMENTS -- FINISH===========
 				
 //=========================HTML CODE START==========================			
@@ -295,7 +295,7 @@ public class PatientServlet extends HttpServlet
 			    out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Visit Dashboard</button> </form>");
 			    
 			    createMsgPage(request, response, "Successful Registration", tmp, out);
-			    registerPatient.close();
+			    registerPatient.close(); con.close();
 //================REGISTER PATIENT'S DATA -- FINISH=================
 				
 //=========================HTML CODE START==========================			
@@ -328,7 +328,8 @@ public class PatientServlet extends HttpServlet
 				synchronized (usrSession)
 				{
 					usrSession.invalidate();
-					response.sendRedirect(request.getContextPath() + "/index.html");
+					//response.sendRedirect(request.getContextPath() + "/index.html");					
+					response.sendRedirect(request.getContextPath());
 				}
 			}
 			catch(NullPointerException nlptre)
@@ -389,7 +390,7 @@ public class PatientServlet extends HttpServlet
 		out.println("<head><title>"+ title + "</title></head>");
 		out.println("<body>");
 		out.println("<p>" + message + "</p>");
-		out.println("<a href=\"/javaHospital/index.html\">Return to Homepage</a>");
+		out.println("<a href=\"/javaHospital/\">Return to Homepage</a>");
 		out.println("</body></html>");
 	}
 }

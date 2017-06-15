@@ -1,7 +1,7 @@
 package UserServlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+//import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try
 		{
-			PrintWriter out = response.getWriter();
+			//PrintWriter out = response.getWriter();
 			request.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html; charset=UTF-8");
 			response.setCharacterEncoding("UTF-8");	
@@ -95,7 +95,7 @@ public class LoginServlet extends HttpServlet
 				ResultSet rs = loginPatient.executeQuery();
 				
 				while(rs.next()) { authName = rs.getString("userid"); authPass = rs.getString("password"); } 
-				rs.close();	loginPatient.close();
+				rs.close();	loginPatient.close(); con.close();
 				try
 				{
 					if (authName.equals(uname) && authPass.equals(upass))
@@ -108,7 +108,7 @@ public class LoginServlet extends HttpServlet
 					}	
 					else
 					{
-						out.println("<script type=\"text/javascript\"> alert(\"Wrong username or password...\nCheck again your Credentials. \"); \"</script>\");");
+						//out.println("<script type=\"text/javascript\"> alert(\"Wrong username or password...\nCheck again your Credentials. \"); \"</script>\");");
 						//RequestDispatcher rd = request.getRequestDispatcher("../patient-login.html");
 						//rd.forward(request, response);
 						response.sendRedirect(request.getContextPath() + "/patient-login.html");
@@ -124,7 +124,8 @@ public class LoginServlet extends HttpServlet
 		{
 			//RequestDispatcher rd = request.getRequestDispatcher("../index.html");
 			//rd.forward(request, response);
-			response.sendRedirect(request.getContextPath() + "/index.html");
+			//response.sendRedirect(request.getContextPath() + "/index.html");
+			response.sendRedirect(request.getContextPath());
 		}
 	}
 }
