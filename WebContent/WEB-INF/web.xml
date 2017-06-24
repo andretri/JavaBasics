@@ -15,24 +15,46 @@
     <res-type>javax.sql.DataSource</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
+  
   <servlet>
     <description></description>
     <display-name>PatientServlet</display-name>
     <servlet-name>PatientServlet</servlet-name>
     <servlet-class>UserServlet.PatientServlet</servlet-class>
   </servlet>
-    <servlet>
+  <servlet>
     <description></description>
     <display-name>LoginServlet</display-name>
     <servlet-name>LoginServlet</servlet-name>
     <servlet-class>UserServlet.LoginServlet</servlet-class>
   </servlet>
+  <servlet>
+    <description></description>
+    <display-name>DoctorServlet</display-name>
+    <servlet-name>DoctorServlet</servlet-name>
+    <servlet-class>UserServlet.DoctorServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>AdminServlet</display-name>
+    <servlet-name>AdminServlet</servlet-name>
+    <servlet-class>UserServlet.AdminServlet</servlet-class>
+  </servlet>
+  
   <servlet-mapping>
     <servlet-name>PatientServlet</servlet-name>
     <url-pattern>/UserServlet/patient</url-pattern>
   </servlet-mapping>
-    <servlet-mapping>
+  <servlet-mapping>
     <servlet-name>LoginServlet</servlet-name>
     <url-pattern>/UserServlet/login</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DoctorServlet</servlet-name>
+    <url-pattern>/UserServlet/doctor</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/UserServlet/admin</url-pattern>
   </servlet-mapping>
 </web-app>

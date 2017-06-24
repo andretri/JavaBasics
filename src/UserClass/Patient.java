@@ -21,7 +21,7 @@ public class Patient extends Users
     public String RegisterPatient()
     {
         //register new patient
-    	return "insert into PATIENT(patientAMKA, userid, password, name, surname, gender) values (?, ?, ?, ?, ?, ?);";
+    	return "insert into PATIENT(patientAMKA, usrname, password, name, surname, gender) values (?, ?, ?, ?, ?, ?);";
     }
     
     	
@@ -65,7 +65,7 @@ public class Patient extends Users
     
     public static String AuthenticatePatient()
     {
-    	return "SELECT * FROM PATIENT WHERE userid = ? and password = ?";
+    	return "SELECT * FROM PATIENT WHERE usrname = ?;";
     }
     
     @Override

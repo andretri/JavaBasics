@@ -1,6 +1,7 @@
 package UserServlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 //import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import UserClass.Admin;
+import UserClass.Doctor;
 import UserClass.Patient;
 
 /**
@@ -54,8 +57,6 @@ public class LoginServlet extends HttpServlet
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		try
-		{
 			//PrintWriter out = response.getWriter();
 			request.setCharacterEncoding("UTF-8");
 			response.setContentType("text/html; charset=UTF-8");
@@ -69,8 +70,6 @@ public class LoginServlet extends HttpServlet
 			//Causes the proxy cache to see the page as "stale"
 			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
 			
-			Connection con = ds.getConnection();
-			PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			
 			String requestType= request.getParameter("requestType");
 			if (requestType.equals("signin"))
@@ -78,54 +77,140 @@ public class LoginServlet extends HttpServlet
 				HttpSession tmp = request.getSession(false);
 				if (tmp != null)
 				{
-					response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+						 if (tmp.getAttribute("usrType").equals("P"))
+						response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+					else if (tmp.getAttribute("usrType").equals("D"))
+						response.sendRedirect(request.getContextPath() +"/doctor?status=signin");
+					else if (tmp.getAttribute("usrType").equals("A"))
+						response.sendRedirect(request.getContextPath() +"/admin?status=signin");
 				}
 				else
 				{
-					response.sendRedirect(request.getContextPath() + "/patient-login.html");
+					response.sendRedirect(request.getContextPath() + "/login.html");
 				}
 			}
 			else if (requestType.equals("Auth"))
 			{
-				String uname = request.getParameter("usrname"),
-					   upass = request.getParameter("passwrd"),
-					   authName = null, authPass = null;
+				boolean findusr;
 				
-				loginPatient.setString(1, uname); loginPatient.setString(2, upass);
-				ResultSet rs = loginPatient.executeQuery();
-				
-				while(rs.next()) { authName = rs.getString("userid"); authPass = rs.getString("password"); } 
-				rs.close();	loginPatient.close(); con.close();
-				try
+				findusr = AuthUser(request, response, "P");			//Authenticate Patient
+				if (findusr == false)
 				{
-					if (authName.equals(uname) && authPass.equals(upass))
+					findusr = AuthUser(request, response, "D");		//Authenticate Doctor
+					if(findusr == false)
 					{
-						HttpSession usrSession = request.getSession();
-						usrSession.setAttribute("usrname", uname);
-						usrSession.setAttribute("passwrd", upass);
-						
-						response.sendRedirect(request.getContextPath() +"/patient?status=signin");
-					}	
-					else
-					{
-						//out.println("<script type=\"text/javascript\"> alert(\"Wrong username or password...\nCheck again your Credentials. \"); \"</script>\");");
-						//RequestDispatcher rd = request.getRequestDispatcher("../patient-login.html");
-						//rd.forward(request, response);
-						response.sendRedirect(request.getContextPath() + "/patient-login.html");
+						findusr = AuthUser(request, response, "A"); //Authenticate Admin
+						if(findusr == false)
+						{
+							response.sendRedirect(request.getContextPath() + "/login.html");
+						}
 					}
 				}
-				catch (NullPointerException nlptr)
+			}
+			else if (requestType.equals("Register"))
+			{
+				RegisterPatient(request, response);
+			}
+	}
+	
+	private boolean AuthUser(HttpServletRequest request, HttpServletResponse response, String usrType) throws ServletException, IOException
+	{
+		boolean usr = true;
+		try
+		{
+			String uname = request.getParameter("usrname"),	upass = request.getParameter("passwrd"), authName = null, authPass = null;
+			String Query = null;
+
+			Connection con = ds.getConnection();
+			
+			if(usrType.equals("P"))
+				Query = Patient.AuthenticatePatient();
+			else if(usrType.equals("D"))
+				Query = Doctor.AuthenticateDoctor();
+			else if(usrType.equals("A"))
+				Query = Admin.AuthenticateAdmin();
+			
+			PreparedStatement loginUser = con.prepareStatement(Query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			loginUser.setString(1, uname);
+			
+			ResultSet rs = loginUser.executeQuery();
+			
+			while(rs.next()) 
+			{ 
+				authName = rs.getString("usrname"); 
+				authPass = rs.getString("password"); 
+			} 
+			rs.close();	loginUser.close(); con.close();
+			
+			try
+			{
+				if (authName.equals(uname) && authPass.equals(upass))
 				{
-					response.sendRedirect(request.getContextPath() + "/patient-login.html");
-				}
+					HttpSession usrSession = request.getSession();
+					usrSession.setAttribute("usrname", uname);
+					usrSession.setAttribute("usrType", usrType);
+					
+					if(usrType.equals("P"))
+						response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+					else if(usrType.equals("D"))
+						response.sendRedirect(request.getContextPath() +"/doctor?status=signin");
+					else
+						response.sendRedirect(request.getContextPath() +"/admin?status=signin");
+				}	
+			}
+			catch (NullPointerException nlptr)
+			{
+				usr = false;
 			}
 		}
 		catch(SQLException sqle)
 		{
-			//RequestDispatcher rd = request.getRequestDispatcher("../index.html");
-			//rd.forward(request, response);
-			//response.sendRedirect(request.getContextPath() + "/index.html");
-			response.sendRedirect(request.getContextPath());
+			//response.sendRedirect(request.getContextPath());
+			sqle.printStackTrace();
+		}
+		
+		return usr;
+	}
+	
+	private void RegisterPatient(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	{
+		PrintWriter out = response.getWriter();
+		HttpSession usrSession = request.getSession();
+		
+		Long AMKA = Long.parseLong(request.getParameter("amka")); String name = request.getParameter("name");
+		String usrname = request.getParameter("usrname"); 		  String surname = request.getParameter("surname");
+		String passwrd = request.getParameter("passwrd"); 	  		  String gender = request.getParameter("gender");
+		
+		try 
+		{
+			Connection con = ds.getConnection();
+			Patient tmpPatient = new Patient(usrname, passwrd, name, surname, AMKA, gender);
+//================REGISTER PATIENT'S DATA -- START==================
+		    PreparedStatement registerPatient = con.prepareStatement(tmpPatient.RegisterPatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		    registerPatient.setLong(1, AMKA);		registerPatient.setString(4, name);
+		    registerPatient.setString(2, usrname); 	registerPatient.setString(5, surname);
+		    registerPatient.setString(3, passwrd);	registerPatient.setString(6, gender);
+
+		    registerPatient.executeUpdate();
+		    String tmp = "Patient: "+surname+", "+name+" ("+AMKA+") \n Registered Succesfully";
+		    //=========================HTML CODE START==========================	
+		    out.println("<html><head>");
+		    out.println("<title>Patient Registration</title>");
+		    out.println("<script type=\"text/javascript\">alert("+tmp+");</script>");
+		    out.println("</head><body></body></html>");
+		    //=========================HTML CODE FINISH=========================		    
+		    registerPatient.close(); con.close();
+//================REGISTER PATIENT'S DATA -- FINISH=================
+		    response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+		} 
+		catch(SQLException sqle) 
+		{
+			sqle.printStackTrace();
+		}
+		finally
+		{
+			usrSession.setAttribute("usrname", usrname);
+			usrSession.setAttribute("usrType", "P");
 		}
 	}
 }

@@ -59,6 +59,15 @@ public class PatientServlet extends HttpServlet
 		response.setContentType("text/html; charset=UTF-8");
 		response.setCharacterEncoding("UTF-8");	
 		
+		response.setHeader("Cache-Control", "no-cache");
+		//Forces caches to obtain a new copy of the page from the origin server
+		response.setHeader("Cache-Control", "no-store");
+		//Directs caches not to store the page under any circumstance
+		response.setDateHeader("Expires", 0);
+		//Causes the proxy cache to see the page as "stale"
+		response.setHeader("Pragma", "no-cache"); //HTTP 1.0
+		//HTTP 1.0 backward enter code here
+		
 		String requestType= (String)request.getParameter("status");
 //======================================================================================================================================================requestType ERROR		
 		if (requestType == null) 
@@ -69,21 +78,12 @@ public class PatientServlet extends HttpServlet
 //============================================================================================================================================requestType PATIENT SIGN IN		
 		else if (requestType.equalsIgnoreCase("signin")) 
 		{
-			response.setHeader("Cache-Control", "no-cache");
-			//Forces caches to obtain a new copy of the page from the origin server
-			response.setHeader("Cache-Control", "no-store");
-			//Directs caches not to store the page under any circumstance
-			response.setDateHeader("Expires", 0);
-			//Causes the proxy cache to see the page as "stale"
-			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
-			//HTTP 1.0 backward enter code here
 			HttpSession usrSession = request.getSession(false);
 			try 
 			{
 				synchronized (usrSession)
 				{			
 					String usrname = (String)usrSession.getAttribute("usrname");
-					String passwrd = (String)usrSession.getAttribute("passwrd");
 					String htmlRow = null;
 					
 					Connection con = ds.getConnection();
@@ -96,13 +96,13 @@ public class PatientServlet extends HttpServlet
 				    
 //=================FETCH PATIENT'S DATA -- START====================
 					PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-					loginPatient.setString(1, usrname);	loginPatient.setString(2, passwrd);
+					loginPatient.setString(1, usrname);
 					
 					ResultSet rs = loginPatient.executeQuery();
 					createFinTable(out, true);
 					while(rs.next())
 					{	
-						tmpPatient = new Patient(rs.getString("userid"), rs.getString("password"), rs.getString("name"), rs.getString("surname"), rs.getLong("patientAMKA"), rs.getString("gender"));
+						tmpPatient = new Patient(rs.getString("usrname"), rs.getString("password"), rs.getString("name"), rs.getString("surname"), rs.getLong("patientAMKA"), rs.getString("gender"));
 					}
 					usrSession.setAttribute("tmPatient", tmpPatient);
 					htmlRow = createTable(rs);
@@ -114,11 +114,11 @@ public class PatientServlet extends HttpServlet
 		
 //=========================HTML CODE START==========================				
 					out.println("<p> <form action='/javaHospital/patient' method='get'>"
-							+ "<button type='submit' name='status' value='appnmtHistry'>"
+							+ "<button type='submit' name='status' value='apthst'>"
 							+ "View Appointment History </button>"
 							+ "</form> </p>");
 					out.println("<p> <form action='/javaHospital/patient' method='get'>"
-							+ "<button type='submit' name='status' value='appmntPndng'>"
+							+ "<button type='submit' name='status' value='aptpnd'>"
 							+ "View Pending Appointments</button>"
 							+ "</form> </p>");
 					out.println("<p> <form action='/javaHospital/patient' method='get'>"
@@ -136,20 +136,12 @@ public class PatientServlet extends HttpServlet
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+				response.sendRedirect(request.getContextPath() + "/login.html");
 			}
 		} 
 //==================================================================================================================================requestType PATIENT PAST APPOINTMENTS
-		else if(requestType.equalsIgnoreCase("appnmtHistry"))
+		else if(requestType.equalsIgnoreCase("apthst"))
 		{
-			response.setHeader("Cache-Control", "no-cache");
-			//Forces caches to obtain a new copy of the page from the origin server
-			response.setHeader("Cache-Control", "no-store");
-			//Directs caches not to store the page under any circumstance
-			response.setDateHeader("Expires", 0);
-			//Causes the proxy cache to see the page as "stale"
-			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
-			//HTTP 1.0 backward enter code here
 			try
 			{
 				HttpSession usrSession = request.getSession(false);
@@ -174,7 +166,7 @@ public class PatientServlet extends HttpServlet
 				out.println(htmlRow);
 				createFinTable(out, false);
 				out.println("<p> <form action='/javaHospital/patient' method='get'>"
-						+ "<button type='submit' name='status' value='appmntPndng'>"
+						+ "<button type='submit' name='status' value='aptpnd'>"
 						+ "View Pending Appointments</button>"
 						+ "</form> </p>");
 				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
@@ -193,20 +185,12 @@ public class PatientServlet extends HttpServlet
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+				response.sendRedirect(request.getContextPath() + "/login.html");
 			}
 		}
 //===============================================================================================================================requestType PATIENT PENDING APPOINTMENTS
-		else if(requestType.equalsIgnoreCase("appmntPndng"))
+		else if(requestType.equalsIgnoreCase("aptpnd"))
 		{
-			response.setHeader("Cache-Control", "no-cache");
-			//Forces caches to obtain a new copy of the page from the origin server
-			response.setHeader("Cache-Control", "no-store");
-			//Directs caches not to store the page under any circumstance
-			response.setDateHeader("Expires", 0);
-			//Causes the proxy cache to see the page as "stale"
-			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
-			//HTTP 1.0 backward enter code here
 			try
 			{
 				HttpSession usrSession = request.getSession(false);
@@ -231,7 +215,7 @@ public class PatientServlet extends HttpServlet
 				out.println(htmlRow);
 				createFinTable(out, false);
 				out.println("<p> <form action='/javaHospital/patient' method='get'>"
-						+ "<button type='submit' name='status' value='appnmtHistry'>"
+						+ "<button type='submit' name='status' value='apthst'>"
 						+ "View Appointment History </button>"
 						+ "</form> </p>");
 				//out.println("<p> <button onclick='window.history.back();'>Return to Dashboard</button> </p>");
@@ -250,78 +234,12 @@ public class PatientServlet extends HttpServlet
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+				response.sendRedirect(request.getContextPath() + "/login.html");
 			}
 		}
-//===========================================================================================================================================requestType PATIENT REGISTER
-		else if (requestType.equalsIgnoreCase("register")) 
-		{
-			response.setHeader("Cache-Control", "no-cache");
-			//Forces caches to obtain a new copy of the page from the origin server
-			response.setHeader("Cache-Control", "no-store");
-			//Directs caches not to store the page under any circumstance
-			response.setDateHeader("Expires", 0);
-			//Causes the proxy cache to see the page as "stale"
-			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
-			//HTTP 1.0 backward enter code here
-			HttpSession usrSession = request.getSession();
-			
-			Long AMKA = Long.parseLong(request.getParameter("amka"));
-			String usrname = request.getParameter("usrname");
-			String passwrd = request.getParameter("passwrd");
-			String name = request.getParameter("name");
-			String surname = request.getParameter("surname");
-			String gender = request.getParameter("gender");
-			
-			try 
-			{
-				Connection con = ds.getConnection();
-				Patient tmpPatient = new Patient(usrname, passwrd, name, surname, AMKA, gender);
-//=========================HTML CODE START==========================		    
-				out.println("<!DOCTYPE html>\r\n" + 
-						"<html>");
-				out.println("<head><title>Patient Registration</title></head>");
-				out.println("<body>");
-//=========================HTML CODE FINISH=========================
-				    
-//=================REGISTER PATIENT'S DATA -- START=================
-			    PreparedStatement registerPatient = con.prepareStatement(tmpPatient.RegisterPatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			    registerPatient.setLong(1, AMKA);		registerPatient.setString(4, name);
-			    registerPatient.setString(2, usrname); 	registerPatient.setString(5, surname);
-			    registerPatient.setString(3, passwrd);	registerPatient.setString(6, gender);
-
-			    registerPatient.executeUpdate();
-			    String tmp = "Patient: "+surname+", "+name+" ("+AMKA+") Registered Succesfully";
-			    out.println("<form action='/javaHospital/patient' method='get'> <button type='submit' name='status' value='signin'>Visit Dashboard</button> </form>");
-			    
-			    createMsgPage(request, response, "Successful Registration", tmp, out);
-			    registerPatient.close(); con.close();
-//================REGISTER PATIENT'S DATA -- FINISH=================
-				
-//=========================HTML CODE START==========================			
-				out.println("</body> </html>");
-//=========================HTML CODE FINISH=========================
-			} 
-			catch(SQLException sqle) 
-			{
-				sqle.printStackTrace();
-			}
-			finally
-			{
-				usrSession.setAttribute("usrname", usrname);
-				usrSession.setAttribute("passwrd", passwrd);
-			}
-		}
+//===============================================================================================================================requestType PATIENT SIGN-OUT
 		else if(requestType.equalsIgnoreCase("signout"))
 		{
-			response.setHeader("Cache-Control", "no-cache");
-			//Forces caches to obtain a new copy of the page from the origin server
-			response.setHeader("Cache-Control", "no-store");
-			//Directs caches not to store the page under any circumstance
-			response.setDateHeader("Expires", 0);
-			//Causes the proxy cache to see the page as "stale"
-			response.setHeader("Pragma", "no-cache"); //HTTP 1.0
-			//HTTP 1.0 backward enter code here
 			try
 			{
 				HttpSession usrSession = request.getSession(false);
@@ -334,7 +252,7 @@ public class PatientServlet extends HttpServlet
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/patient-login.html");
+				response.sendRedirect(request.getContextPath() + "/login.html");
 			}
 		}
 	}
