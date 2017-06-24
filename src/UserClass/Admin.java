@@ -12,7 +12,11 @@ public class Admin extends Users
         super(usrname, usrpass, nameTmp, surnameTmp);
     }
     
-    
+
+    public static String AuthenticateAdmin()
+    {
+    	return "SELECT * FROM ADMINS WHERE usrname = ?";
+    }
     
     public void RegisterDoctor(Doctor newDoc)
     {
@@ -71,7 +75,6 @@ public class Admin extends Users
         
         delPat = null;
     }
-    
     
     
     public void ViewScheduledAppointments(Doctor doc)

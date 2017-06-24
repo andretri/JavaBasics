@@ -3,7 +3,6 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Welcome to Hill Valley Med.Center</title>
-		<link rel="stylesheet" type="text/css" href="theme.css">
 	</head>
 	
 	<body>
@@ -14,9 +13,11 @@
 					<a href="admin-login.html">Login as Administrator</a>
 					<br />
 					<a href="doctor-login.html">Login as Doctor</a>
-					<br />
-					<a href="patient-login.html">Login as Patient</a>
-					<br />
+					<br /><br /><br /><br />
+					
+					<form action='UserServlet/login' method='post'>
+						<button type='submit' name='requestType' value='signin'>Sign-in</button>
+					</form>
     			</div>
   			</div>
   					<p align="center">

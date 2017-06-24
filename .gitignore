@@ -12,3 +12,7 @@ test/
 src/Documentation/
 
 documentation/
+
+\.classpath
+
+loginServlet-Branch0\.java

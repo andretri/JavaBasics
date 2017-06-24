@@ -3,7 +3,7 @@ package UserClass;
 
 public class Doctor extends Users 
 {
-    private String SSN = null;
+    private Long SSN = null;
     private String spec;
     
     
@@ -12,7 +12,7 @@ public class Doctor extends Users
     	super("", "", "", "");
     	this.SetSpec(null);
     }
-    public Doctor(String usrname, String usrpass, String nameTmp, String surnameTmp, String SSNTmp, String spc)
+    public Doctor(String usrname, String usrpass, String nameTmp, String surnameTmp, Long SSNTmp, String spc)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
     	this.SetSSN(SSNTmp);
@@ -21,44 +21,42 @@ public class Doctor extends Users
     
     
     
-    public void EditDocAvailability()
+    public String EditDocAvailability(boolean add)
     {
     	//Ability to change days and hours at which appointments by patients can be made.
         System.out.println("Please input below the days and hours for available appointments:");
-        
-        System.out.println("Ability to change days and hours at which appointments by patients can be made."
-        		+ "\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect"
-        		+ "Java to a Database, which will modify"
-        		+ "all the *inserted* available appointments for a CERTAIN (this.userName) DOCTOR");
-    }
-    
-    
-    
-    public void ViewScheduledAppointments()
-    {
-    	//View schedule of appointments with patients.
-        System.out.println("Your schedule is :");
-        
-        System.out.println("View schedule of appointments with patients."
-        		+ "\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect"
-        		+ "Java to a Database, which will hold"
-        		+ "all the *scheduled* appointments for a CERTAIN (this.userName) DOCTOR");
-    }
-    
-    
-    
-    public void ViewAppointmentHistory()
-    {
-    	//View history of appointments.
-        System.out.println("Your appointment history is :");
 
-        System.out.println("View history of appointments."
-        		+ "\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect"
-        		+ "Java to a Database, which will hold"
-        		+ "all the *past* appointments for a CERTAIN (this.userName) DOCTOR");
+        if (add == true)
+        {
+        	return "INSERT INTO APPOINTMENTS (t, patientAMKA, doctorAMKA, status) VALUES (?, null, ?, false)";
+        }
+        else
+        {
+        	return "DELETE FROM APPOINTMENTS WHERE (t = ? AND patientAMKA is null AND doctorAMKA = ? AND status = false)";
+        }
+    }
+    
+    public String ViewScheduledAppointments()
+    {
+    	//View schedule of appointments with doctors.        
+        return "SELECT A.t as date, PATIENT.surname, PATIENT.name, PATIENT.patientAMKA\r\n" + 
+		"FROM (APPOINTMENTS as A natural join PATIENT)\r\n" + 
+		"WHERE A.doctorAMKA = ? and A.status = false;";
+    }
+    
+    public String ViewAppointmentHistory()
+    {
+    	//View history of appointments.        
+        return "SELECT A.t as date, PATIENT.surname, PATIENT.name, PATIENT.patientAMKA\r\n" + 
+        		"FROM (APPOINTMENTS as A natural join PATIENT)\r\n" + 
+        		"WHERE A.doctorAMKA = ? and A.status = true;";
+    }
+    
+    public static String AuthenticateDoctor()
+    {
+    	return "SELECT DOCTOR.doctorAMKA, DOCTOR.usrname, DOCTOR.password, DOCTOR.name, DOCTOR.surname, DEPARTMENTS.name as Specialty, ADMINS.usrname as Registered_By "+
+    		   "FROM (DOCTOR INNER JOIN DEPARTMENTS on DOCTOR.specialty = DEPARTMENTS.id) INNER JOIN ADMINS ON DOCTOR.admin_id = ADMINS.id "+
+    		   "WHERE DOCTOR.usrname = ?";
     }
     
     @Override
@@ -84,15 +82,15 @@ public class Doctor extends Users
     }
     
     //Get-Set doctor's Social Security Number
-    public void SetSSN(String tmpSSN) throws NumberFormatException
+    public void SetSSN(Long tmpSSN) throws NumberFormatException
     {
         if (this.SSN == null)
         	SSN = tmpSSN;
         else 
         	throw new NumberFormatException();
     }
-    public String GetSSN() 
+    public Long GetSSN() 
     {
-        return SSN;
+        return this.SSN;
     }
 }

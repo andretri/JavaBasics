@@ -15,7 +15,7 @@ public class Appointment
     
     public void CheckAvailability(String date)
     {
-    	obj1.SearchAppointmentDoc(obj2, date);
+    	//obj1.SearchAppointmentDoc(obj2, date);
     	/*
     	 * if (Doctor.isAvailable)
     	 * {
