@@ -136,7 +136,7 @@ public class DoctorServlet extends HttpServlet {
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/login.html");
+				response.sendRedirect(request.getContextPath());
 			}
 		} 
 //==================================================================================================================================requestType DOCTOR PAST APPOINTMENTS
@@ -188,7 +188,7 @@ public class DoctorServlet extends HttpServlet {
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/login.html");
+				response.sendRedirect(request.getContextPath());
 			}
 		}
 //===============================================================================================================================requestType DOCTOR PENDING APPOINTMENTS
@@ -240,7 +240,7 @@ public class DoctorServlet extends HttpServlet {
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/login.html");
+				response.sendRedirect(request.getContextPath());
 			}
 		}
 //===============================================================================================================================requestType DOCTOR SIGN-OUT
@@ -258,7 +258,7 @@ public class DoctorServlet extends HttpServlet {
 			}
 			catch(NullPointerException nlptre)
 			{
-				response.sendRedirect(request.getContextPath() + "/login.html");
+				response.sendRedirect(request.getContextPath());
 			}
 		}
 	}

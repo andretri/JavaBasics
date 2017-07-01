@@ -16,27 +16,7 @@ public class Users
         this.SetPassword(usrpass);
         this.SetName(nameTmp);
         this.SetSurname(surnameTmp);
-   }
-    
-    
-   public void Login()
-   {
-        System.out.println("Welcome, "+ this.GetUsername());
-   }
-   public void Logout()
-   {
-        System.out.println("Goodbye, "+ this.GetUsername());
-   }
-   
-   
-   public void PrintInfo()
-   {
-       System.out.println("\nUser info: ");
-       System.out.println("username: " + GetUsername());
-       System.out.println("Name: " + GetName());
-       System.out.println("Surname: " + GetSurname());
-   }
-   
+   }   
    
    /* Attribute: username Set-Get */
    public void SetUsername(String str)
@@ -84,5 +64,4 @@ public class Users
    {
 	   return Users.usersCounter;
    }
-   
 }

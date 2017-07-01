@@ -2,14 +2,17 @@ package UserClass;
 
 public class Admin extends Users
 {
-	
+	public static int adminCounter = 0;
+
 	public Admin()
 	{
 		super("", "", "", "");
+		++adminCounter;
 	}
     public Admin(String usrname, String usrpass, String nameTmp, String surnameTmp)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
+        ++adminCounter;
     }
     
 
@@ -18,13 +21,10 @@ public class Admin extends Users
     	return "SELECT * FROM ADMINS WHERE usrname = ?";
     }
     
-    public void RegisterDoctor(Doctor newDoc)
+    public void RegisterDoctor()
     {
     	//Register a new doctor.
-        System.out.println("New doctor registered successfully!");
-        System.out.println("Doctor's Data:");
-        newDoc.PrintInfo();
-        
+    	
         //\nA Feature WIP.\n
         //It will be Complete once we Connect 
         //Java to a Database, which will hold (insert into DB) 
@@ -33,13 +33,10 @@ public class Admin extends Users
     
     
     
-    public void RegisterPatient(Patient newPat)
+    public void RegisterAdmin()
     {
     	//Register a new patient.
-        System.out.println("New patient registered successfully!");
-        System.out.println("Patient's Data:");
-        newPat.PrintInfo();
-        
+    	
         //"\nA Feature WIP.\n"
         //"It will be Complete once we Connect "
         //"Java to a Database, which will hold (insert into DB) "
@@ -48,74 +45,25 @@ public class Admin extends Users
     
     
     
-    public void DeleteDoctor(Doctor delDoc)
+    public void BanDoctor()
     {
     	//Delete doctor.
-    	System.out.println("Dr. " + delDoc.GetSurname() +", SSN:" + delDoc.GetSSN() + ") deleted successfully.");
     	
     	//"\nA Feature WIP.\n"
     	//"It will be Complete once we Connect "
     	//"Java to a Database, which the function will modify "
     	//"(delete) a selected *doctor* based on his SSN (delDoc.SSN).");
-    	
-    	delDoc = null;
     }
     
     
     
-    public void DeletePatient(Patient delPat)
+    public void BanPatient()
     {
     	//Delete patient.
-    	System.out.println("Mr/Mrs. " + delPat.GetSurname() +", SSN:" + delPat.GetSSN() + ") deleted successfully.");
-        
+
         //"\nA Feature WIP.\n"
         //"It will be Complete once we Connect "
         //"Java to a Database, which the function will modify "
         //"(delete) a selected *patient* based on his SSN (delPat.SSN).");
-        
-        delPat = null;
-    }
-    
-    
-    public void ViewScheduledAppointments(Doctor doc)
-    {
-    	//View schedule of specific patient or doctor.
-
-        System.out.println("Appointment Schedule of Doctor " + doc.GetName() + " is:");
-        doc.ViewScheduledAppointments();
-    }
-    
-    public void ViewScheduledAppointments(Patient pat)
-    {
-    	//View schedule of specific patient or doctor.
-
-        System.out.println("Appountment Schedule of Patient " + pat.GetName() + " is:");
-        pat.ViewScheduledAppointments();
-    }
-    
-    public void ViewAppointmentHistory(Doctor doc)
-    {
-    	//View history of specific patient or doctor.
-        System.out.println("Appointment history of Doctor " + doc.GetName() + " (" + doc.GetUsername() + ") " + " is:");
-        
-        System.out.println("\nView appointment history of specific patient or doctor."
-        		+ "\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect "
-        		+ "Java to a Database, which the function will access "
-        		+ "all the *past* appointments of a selected user (either patient or " 
-        		+ "doctor) based on his SSN.");
-    } 
-    
-    public void ViewAppointmentHistory(Patient pat)
-    {
-    	//View history of specific patient or doctor.
-        System.out.println("Appointment history of Patient " + pat.GetName() + " (" + pat.GetUsername() + ") " + " is:");
-        
-        System.out.println("\nView appointment history of specific patient or doctor."
-        		+ "\nA Feature WIP.\n"
-        		+ "It will be Complete once we Connect "
-        		+ "Java to a Database, which the function will access "
-        		+ "all the *past* appointments of a selected user (either patient or " 
-        		+ "doctor) based on his SSN.");
     }
 }

@@ -5,20 +5,21 @@ public class Doctor extends Users
 {
     private Long SSN = null;
     private String spec;
-    
+    public static int doctorCounter = 0;
     
     public Doctor()
     {
     	super("", "", "", "");
+        ++doctorCounter;
     	this.SetSpec(null);
     }
     public Doctor(String usrname, String usrpass, String nameTmp, String surnameTmp, Long SSNTmp, String spc)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
+        ++doctorCounter;
     	this.SetSSN(SSNTmp);
     	this.SetSpec(spc);
     }
-    
     
     
     public String EditDocAvailability(boolean add)
@@ -59,15 +60,10 @@ public class Doctor extends Users
     		   "WHERE DOCTOR.usrname = ?";
     }
     
-    @Override
-    public void PrintInfo()
+    public String RegisterDoctor()
     {
-        System.out.println("\nDoctor info: ");
-        System.out.println("Username: " + GetUsername());
-        System.out.println("Name: " + GetName());
-        System.out.println("Surname: " + GetSurname());
-        System.out.println("SSN: " + GetSSN());
-        System.out.println("Specialization: " + GetSpec() + "\n");
+        //register new patient
+        return "insert into DOCTOR(doctorAMKA, usrname, password, name, surname, specialty, admin_id) values (?, ?, ?, ?, ?, ?, ?);";
     }
     
     

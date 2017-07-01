@@ -6,8 +6,13 @@
 </head>
 <body>
 	<form method="post" action="UserServlet/login">
-		<input type="hidden" name="requestType" value="Auth" />
+		<input type="hidden" name="requestType" value="Register" />
 		<table>
+			<tr>
+				<td>AMKA:</td>
+				<td><input type="text" name="amka" /></td>
+				<br />
+			</tr>
 			<tr>
 				<td>Username:</td>
 				<td><input type="text" name="usrname" /></td>
@@ -19,8 +24,23 @@
 				<br />
 			</tr>
 			<tr>
+				<td>Name:</td>
+				<td><input type="text" name="name" /></td>
+				<br />
+			</tr>
+			<tr>
+				<td>Surname:</td>
+				<td><input type="text" name="surname" /></td>
+				<br />
+			</tr>
+			<tr>
+				<td>Gender:</td>
+				<td><input type="text" name="gender" /></td>
+				<br />
+			</tr>
+			<tr>
 				<td></td>
-				<td><input type="submit" value="login" /></td>
+				<td><input type="submit" value="register" /></td>
 				<br />
 			</tr>
 		</table>

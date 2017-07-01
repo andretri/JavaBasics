@@ -1,28 +1,137 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<title>Welcome to Hill Valley Med.Center</title>
-	</head>
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>login form</title>
+
+  <img src="Cross.png" alt="Cross" style="width:300px;height:300px; position: fixed; display: block;top: 1%;left: 40.5%;">
+
+      <style>
+      * {
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  background: white;
+  font: 100%/1 "Helvetica Neue", Arial, sans-serif;
+}
+
+
+.login {
+  position: absolute;
+  top: 50%;
+  left:40%;
+  margin: -10rem 0 0 -10rem;
+  width: 40rem;
+  height: 20rem;
+  padding: 20px;
+  background: #fff;
+  border-radius: 0;
+  overflow: hidden;
+  outline-style: solid;
+  outline-color: red;
+  outline-offset: 0;
+
+
+}
+
+
+.login-header {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20rem;
+  height: 20rem;
+  background: red;
+}
+.login-header > .text {
+  display: block;
+  width: 100%;
+  height: 100%;
+  font-size: 4rem;
+  text-align: center;
+  line-height: 20rem;
+  color: #fff;
+}
+
+.login-form {
+  margin: 0 0 0 20rem;
+  padding: 0.5rem;
+
+}
+
+.login-input {
+  display: block;
+  width: 100%;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  box-shadow: none;
+  border-color: #ccc;
+  border-width: 0 0 2px 0;
+}
+.login-input + .login-input {
+  margin: 15px 0 0;
+}
+.login-input:focus {
+  outline: none;
+  border-bottom-color: red;
+}
+.reg-btn{
+  position: absolute;
+  bottom :2rem;
+  height: 3rem;
+  right :11rem;
+  background: red;
+  border:none;
+  color: white;
+  font-size: 20px;
+  padding: 0.5rem 1rem;
 	
-	<body>
-		<div class="outer">
- 			<div class="middle">
-    			<div class="inner" align = "center">
-	    			<h1 align="center">User Login Interface</h1>
-					<a href="admin-login.html">Login as Administrator</a>
-					<br />
-					<a href="doctor-login.html">Login as Doctor</a>
-					<br /><br /><br /><br />
-					
-					<form action='UserServlet/login' method='post'>
-						<button type='submit' name='requestType' value='signin'>Sign-in</button>
-					</form>
-    			</div>
-  			</div>
-  					<p align="center">
-  						New Here? Fill the Patient <a href="patient-register.html">Registration</a> Form.
-					</p>
-		</div>
-	</body>
+}
+
+.reg-btn:hover{
+  background-color: #FF4c4c;
+}
+
+.login-btn {
+  position: absolute;
+  bottom :2rem;
+  height: 3rem;
+  right :3rem;
+  background: red;
+  border:none;
+  color: white;
+  font-size: 20px;
+  padding: 0.5rem 1rem;
+  
+
+}
+.login-btn:hover{
+  background-color: #FF4c4c;
+}
+
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="login">
+  <header class="login-header"><span class="text">LOG IN</span><span class="loader"></span></header>
+  <form class="login-form" action='UserServlet/login' method='post'>
+    <input class="login-input" type="text" name="usrname" placeholder="Username"/>
+    <input class="login-input" type="password" name="passwrd" placeholder="Password"/>
+    <button class="login-btn" name="requestType" type="submit" value="signin" >Sign-in</button>
+    <form action="reg.html">
+      <button class="reg-btn" type="submit">Register</button>
+    <form/>
+    
+  </form>
+</div>
+
+<footer> 
+
+</body>
 </html>

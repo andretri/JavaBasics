@@ -86,23 +86,20 @@ public class LoginServlet extends HttpServlet
 				}
 				else
 				{
-					response.sendRedirect(request.getContextPath() + "/login.html");
-				}
-			}
-			else if (requestType.equals("Auth"))
-			{
-				boolean findusr;
-				
-				findusr = AuthUser(request, response, "P");			//Authenticate Patient
-				if (findusr == false)
-				{
-					findusr = AuthUser(request, response, "D");		//Authenticate Doctor
-					if(findusr == false)
+					boolean findusr;
+					
+					findusr = AuthUser(request, response, "P");			//Authenticate Patient
+					if (findusr == false)
 					{
-						findusr = AuthUser(request, response, "A"); //Authenticate Admin
+						findusr = AuthUser(request, response, "D");		//Authenticate Doctor
 						if(findusr == false)
 						{
-							response.sendRedirect(request.getContextPath() + "/login.html");
+							findusr = AuthUser(request, response, "A"); //Authenticate Admin
+							if(findusr == false)
+							{
+								//response.sendRedirect(request.getContextPath() + "/login.html");
+								response.sendRedirect(request.getContextPath());
+							}
 						}
 					}
 				}
@@ -201,7 +198,8 @@ public class LoginServlet extends HttpServlet
 		    //=========================HTML CODE FINISH=========================		    
 		    registerPatient.close(); con.close();
 //================REGISTER PATIENT'S DATA -- FINISH=================
-		    response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+		    //response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+		    response.sendRedirect(request.getContextPath());
 		} 
 		catch(SQLException sqle) 
 		{
@@ -213,4 +211,8 @@ public class LoginServlet extends HttpServlet
 			usrSession.setAttribute("usrType", "P");
 		}
 	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request, response);
+	}
+	
 }

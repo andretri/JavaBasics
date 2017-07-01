@@ -5,18 +5,44 @@ public class Patient extends Users
 {
     private Long SSN = null;  
     private String gender = null;
+    public static int patientCounter = 0;
     
     public Patient()
     {
     	super("", "", "", "");
+        ++patientCounter;
     }
     
     public Patient(String usrname, String usrpass, String nameTmp, String surnameTmp, Long tmpSSN, String tmpGender)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
+        ++patientCounter;
         this.SetSSN(tmpSSN);
         this.SetGender(tmpGender);
     }
+    
+    
+    public void CreateAppointment()
+    {
+    	//"Ability to Cancel appointments between a two people."
+        //"\nA Feature WIP.\n"
+        //"It will be Complete once we Connect "
+        //"Java to a Database, which the function will access "
+        //"all the scheduled appointments of a selected user (either patient or " 
+        //"doctor) based on his SSN.");
+    }
+    
+    
+    public void CancelAppointment()
+    {
+        //"Ability to Cancel appointments between a two people."
+        //"\nA Feature WIP.\n"
+        //"It will be Complete once we Connect "
+        //"Java to a Database, which the function will access "
+        //"all the scheduled appointments of a selected user (either patient or " 
+        //"doctor) based on his SSN.");
+    }
+    
     
     public String RegisterPatient()
     {
@@ -66,16 +92,6 @@ public class Patient extends Users
     public static String AuthenticatePatient()
     {
     	return "SELECT * FROM PATIENT WHERE usrname = ?;";
-    }
-    
-    @Override
-    public void PrintInfo()
-    {
-        System.out.println("\nPatient info: ");
-        System.out.println("Username: " + GetUsername());
-        System.out.println("Name: " + GetName());
-        System.out.println("Surname: " + GetSurname());
-        System.out.println("SSN: " + GetSSN() + "\n");
     }
     
     
