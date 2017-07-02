@@ -3,67 +3,79 @@ package UserClass;
 public class Admin extends Users
 {
 	public static int adminCounter = 0;
-
+	private int id = 0;
 	public Admin()
 	{
 		super("", "", "", "");
 		++adminCounter;
 	}
-    public Admin(String usrname, String usrpass, String nameTmp, String surnameTmp)
+    public Admin(String usrname, String usrpass, String nameTmp, String surnameTmp, int id)
     {
         super(usrname, usrpass, nameTmp, surnameTmp);
+        this.SetID(id);
         ++adminCounter;
     }
     
 
-    public static String AuthenticateAdmin()
+    public static String AuthenticateAdmin(boolean flag)
     {
-    	return "SELECT * FROM ADMINS WHERE usrname = ?";
+    	if(flag == false)
+    		return "SELECT * FROM ADMINS WHERE usrname = ? AND password = crypt(?, 3580991459535060::text);";
+    	else	
+    		return "SELECT * FROM ADMINS WHERE usrname = ?;";
     }
     
-    public void RegisterDoctor()
+    public String RegisterDoctor()
     {
     	//Register a new doctor.
-    	
-        //\nA Feature WIP.\n
-        //It will be Complete once we Connect 
-        //Java to a Database, which will hold (insert into DB) 
-        //all the REGISTERED DOCTORS")
+    	return "INSERT INTO DOCTOR(doctorAMKA, usrname, password, name, surname, specialty, admin_id)"
+        		+ "VALUES (?, ?, crypt(?, ?::text), ?, ?, ?, ?)";
+
     }
     
     
     
-    public void RegisterAdmin()
+    public static String RegisterAdmin()
     {
     	//Register a new patient.
     	
-        //"\nA Feature WIP.\n"
-        //"It will be Complete once we Connect "
-        //"Java to a Database, which will hold (insert into DB) "
-        //"all the REGISTERED PATIENTS");
+    	return "INSERT INTO ADMINS (usrname, password, name, surname)"
+				+ "VALUES (?, crypt(?, 3580991459535060::text), ?, ?)";
     }
     
     
     
-    public void BanDoctor()
+    public String BanDoctor(boolean flag)
     {
     	//Delete doctor.
-    	
-    	//"\nA Feature WIP.\n"
-    	//"It will be Complete once we Connect "
-    	//"Java to a Database, which the function will modify "
-    	//"(delete) a selected *doctor* based on his SSN (delDoc.SSN).");
+    	if(flag == true)
+    		return "UPDATE DOCTOR SET password = md5(random()::VARCHAR(20)), banned = true where doctorAMKA = ?;";
+    	else
+    		return "SELECT DOCTOR.doctorAMKA, DOCTOR.usrname, DOCTOR.name, DOCTOR.surname, DEPARTMENTS.name \r\n" + 
+    				"FROM DOCTOR INNER JOIN DEPARTMENTS ON DOCTOR.specialty = DEPARTMENTS.id WHERE DOCTOR.banned = false;";
     }
     
     
     
-    public void BanPatient()
+    public String BanPatient(boolean flag)
     {
     	//Delete patient.
-
-        //"\nA Feature WIP.\n"
-        //"It will be Complete once we Connect "
-        //"Java to a Database, which the function will modify "
-        //"(delete) a selected *patient* based on his SSN (delPat.SSN).");
+    	if(flag == true)
+    		return "UPDATE PATIENT SET password = md5(random()::VARCHAR(20)), banned = true where patientAMKA = ?;";
+    	else
+    		return "SELECT patientAMKA, usrname, name, surname, gender FROM PATIENT WHERE banned = false;";
+    }
+    
+    //Get SSN
+    public void SetID(int tmpId) throws NumberFormatException
+    {
+        if (this.id == 0)
+        	id = tmpId;
+        else 
+        	throw new NumberFormatException();
+    }
+    public int GetID()         
+    {
+        return this.id;
     }
 }

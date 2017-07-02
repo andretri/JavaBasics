@@ -31,7 +31,8 @@ public class PatientServlet extends HttpServlet
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public PatientServlet() {
+    public PatientServlet() 
+    {
         super();
     }
 	/**
@@ -95,8 +96,9 @@ public class PatientServlet extends HttpServlet
 //=========================HTML CODE FINISH=========================
 				    
 //=================FETCH PATIENT'S DATA -- START====================
-					PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+					PreparedStatement loginPatient = con.prepareStatement(Patient.AuthenticatePatient(true), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 					loginPatient.setString(1, usrname);
+					
 					
 					ResultSet rs = loginPatient.executeQuery();
 					createFinTable(out, true);
@@ -114,12 +116,16 @@ public class PatientServlet extends HttpServlet
 		
 //=========================HTML CODE START==========================				
 					out.println("<p> <form action='/javaHospital/patient' method='get'>"
-							+ "<button type='submit' name='status' value='apthst'>"
+							+ "<button type='submit' name='status' value='aptcrt'>"
+							+ "Make An Appointment</button>");
+					out.println("<button type='submit' name='status' value='aptpnd'>"
+							+ "View Pending Appointments</button>");
+					out.println("<button type='submit' name='status' value='apthst'>"
 							+ "View Appointment History </button>"
 							+ "</form> </p>");
-					out.println("<p> <form action='/javaHospital/patient' method='get'>"
-							+ "<button type='submit' name='status' value='aptpnd'>"
-							+ "View Pending Appointments</button>"
+					out.println("<p> <form action='/javaHospital/'>"
+							+ "<button type='submit'>"
+							+ "Return to Homepage</button>"
 							+ "</form> </p>");
 					out.println("<p> <form action='/javaHospital/patient' method='get'>"
 							+ "<button type='submit' name='status' value='signout'>"
@@ -140,6 +146,117 @@ public class PatientServlet extends HttpServlet
 			}
 		} 
 //==================================================================================================================================requestType PATIENT PAST APPOINTMENTS
+		else if(requestType.equalsIgnoreCase("aptcrt"))
+		{
+			try
+			{
+				String Query = "SELECT * from DEPARTMENTS;";
+				Connection con = ds.getConnection();
+				
+				PreparedStatement SpecialtyList = con.prepareStatement(Query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				ResultSet rs = SpecialtyList.executeQuery();
+				String SpecLst= GetSpecialtyList(rs);
+				rs.close();	SpecialtyList.close(); con.close();
+				
+				out.println("<form action='/javaHospital/patient' method='get'>"
+						+ "Search By Dr's Surname:&nbsp;"
+						+ "<input type='text' name='docsurname' placeholder='Dr. Surname'/>"
+						+ "&nbsp;&nbsp;OR Specialty:&nbsp;" + SpecLst + "&nbsp;&nbsp;<button type='submit' name='status' value='aptcrt'> Search </button>");			
+				out.println("<br/><br/>");
+				out.println("<form action='/javaHospital/patient' method='get'> "
+						+ "<button type='submit' name='status' value='signin'>"
+						+ "Return to Dashboard</button>"
+						+ "</form>");
+				String docsurname = "";
+				int docspecialty = 0;
+				try
+				{
+					docsurname = request.getParameter("docsurname");
+				}
+				catch (NullPointerException nlptre){}
+				try
+				{
+					docspecialty = Integer.parseInt(request.getParameter("docspecialty"));
+				}
+				catch (NullPointerException nlptre){}
+				
+				con = ds.getConnection();
+				PreparedStatement avlapt = con.prepareStatement(Patient.SearchApt(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+				avlapt.setString(1, docsurname);
+				avlapt.setInt(2, docspecialty);
+				rs = avlapt.executeQuery();
+				
+				createFinTable(out, true);
+			    String htmlRow = createTable(rs, true, request);
+				out.println(htmlRow);
+			    createFinTable(out, false);
+				
+				rs.close();	avlapt.close(); con.close();
+			}
+			catch(SQLException sqle) 
+			{	
+				sqle.printStackTrace();
+			}
+			catch(NullPointerException nlptre)
+			{
+				response.sendRedirect(request.getContextPath());
+			}
+		}
+		else if(requestType.equalsIgnoreCase("aptadd"))
+		{
+			int id = Integer.parseInt(request.getParameter("id"));
+			try 
+			{
+				HttpSession usrSession = request.getSession(false);
+				synchronized (usrSession)
+				{
+					
+				Connection con = ds.getConnection();
+				Patient tmpPatient = (Patient)usrSession.getAttribute("tmPatient");
+			
+				//================REGISTER DOCTOR'S APPOINTMENT-- START==================
+			    PreparedStatement addapthrs = con.prepareStatement(tmpPatient.MakeApt(true), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			    addapthrs.setLong(1, tmpPatient.GetSSN());
+			    addapthrs.setLong(2, id);
+			    addapthrs.executeUpdate();
+			    addapthrs.close(); con.close();
+			    //================REGISTER DOCTOR'S APPOINTMENT -- FINISH=================
+			    //response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+			    response.sendRedirect(request.getHeader("referer"));
+				}
+			} 
+			catch(SQLException sqle) 
+			{
+				sqle.printStackTrace();
+			}
+		}
+		else if(requestType.equalsIgnoreCase("aptdel"))
+		{
+			int id = Integer.parseInt(request.getParameter("id"));
+			try 
+			{
+				HttpSession usrSession = request.getSession(false);
+				synchronized (usrSession)
+				{
+					
+				Connection con = ds.getConnection();
+				Patient tmpPatient = (Patient)usrSession.getAttribute("tmPatient");
+				//================REGISTER DOCTOR'S APPOINTMENT-- START==================
+			    PreparedStatement addapthrs = con.prepareStatement(tmpPatient.MakeApt(false), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			    addapthrs.setInt(1, id);
+			    addapthrs.executeUpdate();	    
+			    addapthrs.close(); con.close();
+			    //================REGISTER DOCTOR'S APPOINTMENT -- FINISH=================
+			    //response.sendRedirect(request.getContextPath() +"/patient?status=signin");
+			    //response.sendRedirect(request.getContextPath() + "/doctor?status=aptcrt");
+			    response.sendRedirect(request.getHeader("referer"));
+				}
+			}
+			catch(SQLException sqle)
+			{
+				sqle.printStackTrace();
+			}
+		}
 		else if(requestType.equalsIgnoreCase("apthst"))
 		{
 			try
@@ -211,7 +328,7 @@ public class PatientServlet extends HttpServlet
 				ResultSet appmnt = ViewPendingAppointments.executeQuery();
 				
 				createFinTable(out, true);
-				String htmlRow = createTable(appmnt);			
+				String htmlRow = createTable(appmnt, false, request);		
 				out.println(htmlRow);
 				createFinTable(out, false);
 				out.println("<p> <form action='/javaHospital/patient' method='get'>"
@@ -256,9 +373,29 @@ public class PatientServlet extends HttpServlet
 			}
 		}
 	}
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse   response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse   response) throws ServletException, IOException 
+	{
         doPost(request, response);
+	}
+	
+	private String GetSpecialtyList(ResultSet rs) 
+	{
+		String tmp = "<select name='docspecialty' required>";
+		tmp  += "<option value = '' disabled selected>Dr. Specialty</option>";	
+		try 
+		{			
+		    rs.beforeFirst();
+			while(rs.next())
+			{
+				tmp  += "<option value = '"+ rs.getString(1) +"'>" + rs.getString(2) + "</option>";						
+			}
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		tmp += "</select>";
+		return tmp;
 	}
 
 	public void createFinTable(PrintWriter out, Boolean flag)
@@ -267,6 +404,48 @@ public class PatientServlet extends HttpServlet
 			out.println("<table border=\"0\">");
 		else
 			out.println("</table>");
+	}
+	private String createTable(ResultSet rs, Boolean flag, HttpServletRequest request)
+	{
+		String row = null;
+		try 
+		{
+			int indx = rs.getMetaData().getColumnCount();
+			
+				row = "<tr>";
+			for (int i = 1; i <= indx; i++)
+			{
+				if (!rs.getMetaData().getColumnName(i).equals("password"))
+					row += "<td>" + rs.getMetaData().getColumnName(i) + "</td>";				
+			}	
+				row += "</tr>";
+				  rs.beforeFirst();
+			while(rs.next())
+			{
+				row += "<tr>";
+				for (int i = 1; i <= indx; i++)
+				{
+					if (!rs.getMetaData().getColumnName(i).equals("password"))
+						row  += "<td>" + rs.getString(i) + "</td>";				
+				}		
+				if (flag.equals(true))
+				{
+					String tmp = request.getContextPath()+"/patient?status=aptadd&id="+rs.getString(1);
+					row += "<td>" + "<a href='"+tmp+"'>Arrange</a>" + "</td>";
+				}
+				else
+				{
+					String tmp = request.getContextPath()+"/patient?status=aptdel&id="+rs.getString(1);
+					row += "<td>" + "<a href='"+tmp+"'>Cancel</a>" + "</td>";
+				}
+				row += "</tr>";
+			}
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		return row;
 	}
 	private String createTable(ResultSet rs)
 	{

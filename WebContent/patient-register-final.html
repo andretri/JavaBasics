@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Patient Registration Form</title>
+
+
+  <style>
+    * 
+    {
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+    body 
+    {
+      background: white;
+      font: 100%/1 "Helvetica Neue", Arial, sans-serif;
+    }
+    .register 
+    {
+      position: absolute;
+      top: 50%;
+      left:40%;
+      margin: -10rem 0 0 -10rem;
+      width: 40rem;
+      height: 23rem;
+      padding: 20px;
+      background: #fff;
+      border-radius: 0;
+      overflow: hidden;
+      outline-style: solid;
+      outline-color: red;
+      outline-offset: 0;
+    }
+    .reg-header 
+    {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 20rem;
+      height: 35rem;
+      background: red;
+    }
+    .reg-header > .text 
+    {
+      display: block;
+      width: 100%;
+      height: 100%;
+      font-size: 3.7rem;
+      text-align: center;
+      line-height: 25rem;
+      color: #fff;
+    }
+    .reg-form 
+    {
+      margin: 0 0 0 20rem;
+      padding: 0.5rem;
+    
+    }
+    .reg-input 
+    {
+      display: block;
+      width: 100%;
+      font-size: 1rem;
+      padding: 0.5rem 1rem;
+      box-shadow: none;
+      border-color: #ccc;
+      border-width: 0 0 2px 0;
+    }
+    .reg-input + .reg-input 
+    {
+      margin: 10px 0 0;
+    }
+    .reg-input:focus 
+    {
+      outline: none;
+      border-bottom-color: red;
+    }
+    .reg-btn 
+    {
+      position: absolute;
+      bottom :1rem;
+      height: 3rem;
+      right :1rem;
+      background: red;
+      border:none;
+      color: white;
+      font-size: 20px;
+      padding: 0.5rem 1rem;
+    }
+    .reg-btn:after 
+    {
+      content: "";
+      position: absolute;
+      left: 1rem;
+      top: 0.8rem;
+      width: 0;
+      height: 0;
+      transition: border 0.3s ease-in-out 0s;
+    }
+    .reg-btn:hover, .reg-btn:focus, .reg-btn:active 
+    {
+      background-color: #FF4c4c;
+    }
+    .reg-btn:hover:after, .reg-btn:focus:after, .   reg-btn:active:after 
+    {
+      border-left-color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <img src="Cross.png" alt="Cross" style="width:300px;height:300px; position: fixed; display: block;top:0.2%;left: 40.5%;">
+
+<div class="register">
+  <header class="reg-header"><span class="text">REGISTER</span><span class="loader"></span></header>
+  <form class="reg-form" method="post" action="UserServlet/login">
+  <input type="hidden" name="requestType" value="Register" />
+    <input class="reg-input" type="text" name="amka" placeholder="AMKA" required="required"/>
+    <input class="reg-input" type="text" name="usrname" placeholder="Username" required="required"/>
+    <input class="reg-input" type="password" name="passwrd" placeholder="Password" required="required"/>
+    <input class="reg-input" type="text" name="name" placeholder="Name" required="required"/>
+    <input class="reg-input" type="text" name="surname" placeholder="Surname" required="required"/><br/>
+    <input type="radio" name="gender" required="required" value="Male">Male
+    <input type="radio" name="gender" required="required" value="Female"> Female
+
+    <button class="reg-btn" type="submit">Register</button>
+    
+  </form>
+</div>
+
+<footer> 
+
+</body>
+</html>

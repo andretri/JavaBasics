@@ -22,61 +22,32 @@ public class Patient extends Users
     }
     
     
-    public void CreateAppointment()
-    {
-    	//"Ability to Cancel appointments between a two people."
-        //"\nA Feature WIP.\n"
-        //"It will be Complete once we Connect "
-        //"Java to a Database, which the function will access "
-        //"all the scheduled appointments of a selected user (either patient or " 
-        //"doctor) based on his SSN.");
-    }
-    
-    
-    public void CancelAppointment()
-    {
-        //"Ability to Cancel appointments between a two people."
-        //"\nA Feature WIP.\n"
-        //"It will be Complete once we Connect "
-        //"Java to a Database, which the function will access "
-        //"all the scheduled appointments of a selected user (either patient or " 
-        //"doctor) based on his SSN.");
-    }
-    
-    
     public String RegisterPatient()
     {
         //register new patient
-    	return "insert into PATIENT(patientAMKA, usrname, password, name, surname, gender) values (?, ?, ?, ?, ?, ?);";
+    	return "insert into PATIENT(patientAMKA, usrname, password, name, surname, gender) values (?, ?, crypt(?, ?::text), ?, ?, ?);";
     }
     
-    	
-    
-    public String SearchAppointmentDoc()
+    public static String SearchApt()
     {
-    	//Search to find days and time for appointments for a specific doctor.
-   		return "select APPOINTMENTS.t, DOCTOR.surname, DOCTOR.name, DEPARTMENTS.name"+
-   			   "from (APPOINTMENTS natural join DOCTOR) inner join DEPARTMENTS on DOCTOR.specialty = DEPARTMENTS.id"+
-   			   "where DOCTOR.name = and APPOINTMENTS.t::date = ?::date; and APPOINTMENTS.patientAMKA is null and APPOINTMENTS.status is null";
-        //Search file Appointments for DoctorName
+    	return "SELECT APPOINTMENTS.id, DOCTOR.doctorAMKA, DOCTOR.usrname, DOCTOR.name, DOCTOR.surname, APPOINTMENTS.t " + 
+				"FROM DOCTOR NATURAL JOIN APPOINTMENTS " + 
+				"WHERE (DOCTOR.surname = ? OR DOCTOR.specialty = ?) " + 
+				"AND APPOINTMENTS.patientAMKA is null AND APPOINTMENTS.status = false;";
     }
     
-    
-    
-    public String SearchAppointmentSpc()
+    public String MakeApt(boolean flag)
     {
-    	//Search to find days and time for appointments for a specific specialization.        
-        return  "select APPOINTMENTS.t, DOCTOR.surname, DOCTOR.name, DEPARTMENTS.name"+
-        		"from (APPOINTMENTS natural join DOCTOR) inner join DEPARTMENTS on DOCTOR.specialty = DEPARTMENTS.id"+
-        		"where DOCTOR.specialty = ? and APPOINTMENTS.t::date = ?::date; and APPOINTMENTS.patientAMKA is null and APPOINTMENTS.status is null";
+    	if(flag == (true))
+    		return "UPDATE APPOINTMENTS SET patientAMKA = ? WHERE id = ?;";
+    	else
+    		return "UPDATE APPOINTMENTS SET patientAMKA = null WHERE id = ?;";
     }
-    
-    
     
     public String ViewScheduledAppointments()
     {
     	//View schedule of appointments with doctors.
-    	return "SELECT A.t as date, 'Dr. ' || DOCTOR.surname as doc_name,  DPT.name as dpt_name, DOCTOR.doctorAMKA as AMKA\r\n" + 
+    	return "SELECT A.id, A.t as date, 'Dr. ' || DOCTOR.surname as doc_name,  DPT.name as dpt_name, DOCTOR.doctorAMKA as AMKA\r\n" + 
 		"FROM (APPOINTMENTS as A natural join DOCTOR) inner join DEPARTMENTS as DPT on DOCTOR.specialty = DPT.id\r\n" + 
 		"WHERE A.patientAMKA = ? and A.status = false;";
     }
@@ -84,14 +55,18 @@ public class Patient extends Users
     public String ViewAppointmentHistory()
     {
     	//View history of appointments.        
-        return "SELECT A.t as date, 'Dr. ' || DOCTOR.surname as doc_name,  DPT.name as dpt_name, DOCTOR.doctorAMKA as AMKA\r\n" + 
+        return "SELECT A.id, A.t as date, 'Dr. ' || DOCTOR.surname as doc_name,  DPT.name as dpt_name, DOCTOR.doctorAMKA as AMKA\r\n" + 
         		"FROM (APPOINTMENTS as A natural join DOCTOR) inner join DEPARTMENTS as DPT on DOCTOR.specialty = DPT.id\r\n" + 
         		"WHERE A.patientAMKA = ? and A.status = true;";
     }
     
-    public static String AuthenticatePatient()
+    public static String AuthenticatePatient(boolean flag)
     {
-    	return "SELECT * FROM PATIENT WHERE usrname = ?;";
+    	//return "SELECT * FROM PATIENT WHERE usrname = ?;";
+    		if(flag == (false))
+    			return "SELECT * FROM PATIENT WHERE usrname = ? AND password = crypt(?, patientAMKA::text);";
+    		else
+    			return "SELECT patientAMKA, usrname, password, name, surname, gender FROM PATIENT WHERE usrname = ?;";
     }
     
     

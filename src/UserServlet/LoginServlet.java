@@ -121,14 +121,15 @@ public class LoginServlet extends HttpServlet
 			Connection con = ds.getConnection();
 			
 			if(usrType.equals("P"))
-				Query = Patient.AuthenticatePatient();
+				Query = Patient.AuthenticatePatient(false);
 			else if(usrType.equals("D"))
-				Query = Doctor.AuthenticateDoctor();
+				Query = Doctor.AuthenticateDoctor(false);
 			else if(usrType.equals("A"))
-				Query = Admin.AuthenticateAdmin();
+				Query = Admin.AuthenticateAdmin(false);
 			
 			PreparedStatement loginUser = con.prepareStatement(Query, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			loginUser.setString(1, uname);
+			loginUser.setString(2, upass);
 			
 			ResultSet rs = loginUser.executeQuery();
 			
@@ -141,7 +142,7 @@ public class LoginServlet extends HttpServlet
 			
 			try
 			{
-				if (authName.equals(uname) && authPass.equals(upass))
+				if (!authName.equals(null) && !authPass.equals(null))
 				{
 					HttpSession usrSession = request.getSession();
 					usrSession.setAttribute("usrname", uname);
@@ -184,9 +185,10 @@ public class LoginServlet extends HttpServlet
 			Patient tmpPatient = new Patient(usrname, passwrd, name, surname, AMKA, gender);
 //================REGISTER PATIENT'S DATA -- START==================
 		    PreparedStatement registerPatient = con.prepareStatement(tmpPatient.RegisterPatient(), ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		    registerPatient.setLong(1, AMKA);		registerPatient.setString(4, name);
-		    registerPatient.setString(2, usrname); 	registerPatient.setString(5, surname);
-		    registerPatient.setString(3, passwrd);	registerPatient.setString(6, gender);
+		    registerPatient.setLong(1, AMKA);		registerPatient.setString(5, name);
+		    registerPatient.setString(2, usrname); 	registerPatient.setString(6, surname);
+		    registerPatient.setString(3, passwrd);	registerPatient.setString(7, gender);
+		    registerPatient.setLong(4, AMKA);
 
 		    registerPatient.executeUpdate();
 		    String tmp = "Patient: "+surname+", "+name+" ("+AMKA+") \n Registered Succesfully";
@@ -198,8 +200,7 @@ public class LoginServlet extends HttpServlet
 		    //=========================HTML CODE FINISH=========================		    
 		    registerPatient.close(); con.close();
 //================REGISTER PATIENT'S DATA -- FINISH=================
-		    //response.sendRedirect(request.getContextPath() +"/patient?status=signin");
-		    response.sendRedirect(request.getContextPath());
+		    response.sendRedirect(request.getContextPath() +"/patient?status=signin");
 		} 
 		catch(SQLException sqle) 
 		{

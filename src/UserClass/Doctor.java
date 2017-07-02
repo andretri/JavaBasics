@@ -21,26 +21,33 @@ public class Doctor extends Users
     	this.SetSpec(spc);
     }
     
+    public String ViewAvailableHrs()
+    {
+    	return "SELECT id, t FROM APPOINTMENTS WHERE patientAMKA is null AND doctorAMKA = ? AND status = false;";
+    }
     
     public String EditDocAvailability(boolean add)
     {
     	//Ability to change days and hours at which appointments by patients can be made.
-        System.out.println("Please input below the days and hours for available appointments:");
-
         if (add == true)
         {
-        	return "INSERT INTO APPOINTMENTS (t, patientAMKA, doctorAMKA, status) VALUES (?, null, ?, false)";
+        	return "INSERT INTO APPOINTMENTS (t, patientAMKA, doctorAMKA, status) VALUES (?, null, ?, false);";
         }
         else
         {
-        	return "DELETE FROM APPOINTMENTS WHERE (t = ? AND patientAMKA is null AND doctorAMKA = ? AND status = false)";
+        	return "DELETE FROM APPOINTMENTS WHERE (id = ?);";
         }
+    }
+    
+    public static String CommitAppointment()
+    {
+    	return "UPDATE APPOINTMENTS SET status = true WHERE id = ?;";
     }
     
     public String ViewScheduledAppointments()
     {
     	//View schedule of appointments with doctors.        
-        return "SELECT A.t as date, PATIENT.surname, PATIENT.name, PATIENT.patientAMKA\r\n" + 
+        return "SELECT id, A.t as date, PATIENT.surname, PATIENT.name, PATIENT.patientAMKA\r\n" + 
 		"FROM (APPOINTMENTS as A natural join PATIENT)\r\n" + 
 		"WHERE A.doctorAMKA = ? and A.status = false;";
     }
@@ -48,16 +55,21 @@ public class Doctor extends Users
     public String ViewAppointmentHistory()
     {
     	//View history of appointments.        
-        return "SELECT A.t as date, PATIENT.surname, PATIENT.name, PATIENT.patientAMKA\r\n" + 
+        return "SELECT id, A.t as date, PATIENT.surname, PATIENT.name, PATIENT.patientAMKA\r\n" + 
         		"FROM (APPOINTMENTS as A natural join PATIENT)\r\n" + 
         		"WHERE A.doctorAMKA = ? and A.status = true;";
     }
     
-    public static String AuthenticateDoctor()
+    public static String AuthenticateDoctor(boolean flag)
     {
-    	return "SELECT DOCTOR.doctorAMKA, DOCTOR.usrname, DOCTOR.password, DOCTOR.name, DOCTOR.surname, DEPARTMENTS.name as Specialty, ADMINS.usrname as Registered_By "+
+    	if (flag == false)
+    		return "SELECT DOCTOR.doctorAMKA, DOCTOR.usrname, DOCTOR.password, DOCTOR.name, DOCTOR.surname, DEPARTMENTS.name as Specialty, ADMINS.usrname as Registered_By "+
     		   "FROM (DOCTOR INNER JOIN DEPARTMENTS on DOCTOR.specialty = DEPARTMENTS.id) INNER JOIN ADMINS ON DOCTOR.admin_id = ADMINS.id "+
-    		   "WHERE DOCTOR.usrname = ?";
+    		   "WHERE DOCTOR.usrname = ? AND DOCTOR.password = crypt(?, DOCTOR.doctorAMKA::text)";
+    	else
+    		return "SELECT DOCTOR.doctorAMKA, DOCTOR.usrname, DOCTOR.password, DOCTOR.name, DOCTOR.surname, DEPARTMENTS.name as Specialty, ADMINS.usrname as Registered_By "+
+ 		   		"FROM (DOCTOR INNER JOIN DEPARTMENTS on DOCTOR.specialty = DEPARTMENTS.id) INNER JOIN ADMINS ON DOCTOR.admin_id = ADMINS.id "+
+ 		   		"WHERE DOCTOR.usrname = ?";
     }
     
     public String RegisterDoctor()
